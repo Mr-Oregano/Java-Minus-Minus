@@ -1,0 +1,17 @@
+operator,precedence,associativity
+~,highest,right
+"++, --",2,right
+^,3,right
+"*, /, %",4,left
+"+, -",5,left
+abs,6,right
+"<, >, ==, != ",7,left
+not,8,right
+and,9,left
+or,lowest,left
+,,
+,,
+,,
+,,
+,,
+,,

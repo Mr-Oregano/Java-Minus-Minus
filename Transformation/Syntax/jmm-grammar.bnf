@@ -1,0 +1,56 @@
+USE_LR_PARSER
+
+statementList
+
+<statementList> ::= <epsilon> | <statement> <statementList> .
+
+<statement> ::= <expr> ";" 
+			  | <block> 
+			  | <assignment> ";" 
+			  | <decl> ";" 
+			  | "if" "(" <expr> ")" <block> 
+			  | "if" "(" <expr> ")" <block> "else" <block>			
+			  | "while" "(" <expr> ")" <block>
+			  | "for" "(" <assignment> ";" <expr> ";" <expr> ")" <block> 
+			  | "print" "(" <expr> ")" ";"
+			  | <skip> ";" .
+
+<skip> ::= <epsilon> .
+
+<assignment> ::= IDENTIFIER "=" <expr> .
+
+<decl> ::= TYPE IDENTIFIER .
+
+<block> ::= "{" <statementList> "}" .
+
+<expr> ::= <expr> "or" <andExpr> | <andExpr> .
+
+<andExpr> ::= <andExpr> "and" <notExpr> | <notExpr> .
+
+<notExpr> ::= "not" <notExpr> | <relExpr> .					
+
+<relExpr> ::= <relExpr> <relOp> <absExpr> | <absExpr> .
+<relOp> ::= "<" | ">" | "==" | "!=" .
+
+<absExpr> ::=  "abs" <absExpr> | <sumExpr> .
+
+<sumExpr> ::= <sumExpr> <addOp> <mulExpr> | <mulExpr> .
+<addOp> ::= "+" | "-" .
+
+<mulExpr> ::= <mulExpr> <mulOp> <expExpr> | <expExpr> .
+<mulOp> ::= "*" | "/" | "%" .
+
+<expExpr> ::= <incExpr> "^" <expExpr> | <incExpr> .
+
+<incExpr> ::= <incOp> <unaryExpr> | <unaryExpr> <incOp> | <unaryExpr> .
+<incOp> ::= "++" | "--".
+
+<unaryExpr> ::= "~" <factor> | <factor> .
+
+<factor> ::= <mutable> | <immutable> .
+
+<mutable> ::= IDENTIFIER .
+
+<immutable> ::= "true" | "false" | INT_LITERAL | "(" <expr> ")" .
+
+<epsilon> ::= .
