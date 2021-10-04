@@ -1,0 +1,74 @@
+bool isCool;
+int x;
+int y;
+
+x = 9;
+y = ~3;
+isCool = false;
+
+// This is a single line comment
+
+/* 
+ * This
+ * is
+ * a 
+ * multiline
+ * comment
+ */
+
+/* This is a /* nested */
+ * multiline comment */
+
+// If and Loop statements require blocks
+//
+if (x > 9 and x == 10 or x < 8)
+{
+	x = 8; // assignment
+}
+else
+{
+	isCool = true;
+}
+
+// Else statements are optional
+//
+if (isCool)
+{
+	isCool = not not isCool;
+}
+
+while (x > 0)
+{
+	x--;
+	y++;
+}
+
+// This is a forloop example
+//
+for (y = 0; y < 35; ++y)
+{
+	--x;
+}
+
+if (true)
+{
+
+}
+
+print(~x); // print statements can evaluate given expressions
+print(abs y);
+print(abs(x));
+print(x + y * 4 ^ 3 ^ 2);
+
+// Our language allows empty blocks and statements
+
+{ }
+
+;;
+;
+
+{
+	{
+		;;
+	}
+}
