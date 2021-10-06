@@ -48,14 +48,18 @@ statementList
 <sumExpr> ::= <sumExpr> <addOp> <mulExpr> | <mulExpr> .
 <addOp> ::= "+" | "-" .
 
-<mulExpr> ::= <mulExpr> <mulOp> <expExpr> | <expExpr> .
+<mulExpr> ::= <mulExpr> <mulOp> <unaryExpr> | <unaryExpr> .
 <mulOp> ::= "*" | "/" | "%" .
 
-<expExpr> ::= <unaryExpr> "^" <expExpr> | <unaryExpr> .
+(* We DO NOT want to allow ~~5 expressions to exist 
+   so <unaryExpr> will be forced to resolve to <expExpr> for all paths. *)
+<unaryExpr> ::= "~" <expExpr> | <expExpr> .
 
-<unaryExpr> ::= "~" <factor> | <factor> .
+<expExpr> ::= <factor> "^" <expExpr> | <factor> .
 
 <factor> ::= <mutable> | <immutable> .
 
 <mutable> ::= IDENTIFIER .
-<immutable> ::= "true" | "false" | INT_LITERAL | "(" <expr> ")" .
+<immutable> ::= "true" | "false" | INT_LITERAL | "(" <expr> ")" . 
+(* We may reduce to "(" <orExpr> ")" instead to disallow expressions like
+   (++5) - 3 to be part of the language. *)
