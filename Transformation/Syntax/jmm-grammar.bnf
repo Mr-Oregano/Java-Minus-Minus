@@ -1,3 +1,5 @@
+USE_LR_PARSER
+
 (* Grammar for the Java Minus Minus language 
 	Authors:
 		Klim Fedorchuk
@@ -6,11 +8,9 @@
 		Chaz Brock
 *)
 
-USE_LR_PARSER
-
 statementList
 
-<statementList> ::= <epsilon> | <statement> <statementList> .
+<statementList> ::= | <statement> <statementList> .
 
 <statement> ::= <expr> ";" 
 			  | <block> 
@@ -21,9 +21,7 @@ statementList
 			  | "while" "(" <expr> ")" <block>
 			  | "for" "(" <assignment> ";" <expr> ";" <expr> ")" <block> 
 			  | "print" "(" <expr> ")" ";"
-			  | <skip> ";" .
-
-<skip> ::= <epsilon> .
+			  | ";" .
 
 <assignment> ::= IDENTIFIER "=" <expr> .
 
@@ -33,10 +31,13 @@ statementList
 
 (* Basic Expressions *)
 
-<expr> ::= <expr> "or" <andExpr> | <andExpr> .
+<expr> ::= <orExpr> | <incExpr> .
 
+<incExpr> ::= <incOp> <mutable> | <mutable> <incOp> .
+<incOp> ::= "++" | "--".
+
+<orExpr> ::= <orExpr> "or" <andExpr> | <andExpr> .
 <andExpr> ::= <andExpr> "and" <notExpr> | <notExpr> .
-
 <notExpr> ::= "not" <notExpr> | <relExpr> .					
 
 <relExpr> ::= <relExpr> <relOp> <absExpr> | <absExpr> .
@@ -50,17 +51,11 @@ statementList
 <mulExpr> ::= <mulExpr> <mulOp> <expExpr> | <expExpr> .
 <mulOp> ::= "*" | "/" | "%" .
 
-<expExpr> ::= <incExpr> "^" <expExpr> | <incExpr> .
-
-<incExpr> ::= <incOp> <unaryExpr> | <unaryExpr> <incOp> | <unaryExpr> .
-<incOp> ::= "++" | "--".
+<expExpr> ::= <unaryExpr> "^" <expExpr> | <unaryExpr> .
 
 <unaryExpr> ::= "~" <factor> | <factor> .
 
 <factor> ::= <mutable> | <immutable> .
 
 <mutable> ::= IDENTIFIER .
-
 <immutable> ::= "true" | "false" | INT_LITERAL | "(" <expr> ")" .
-
-<epsilon> ::= .
