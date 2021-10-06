@@ -1,3 +1,11 @@
+(* Grammar for the Java Minus Minus language 
+	Authors:
+		Klim Fedorchuk
+		Dylan Keefer
+		Connor Peterson
+		Chaz Brock
+*)
+
 USE_LR_PARSER
 
 statementList
@@ -6,7 +14,7 @@ statementList
 
 <statement> ::= <expr> ";" 
 			  | <block> 
-			  | <assignment> ";" 
+			  | <assignment> ";"
 			  | <decl> ";" 
 			  | "if" "(" <expr> ")" <block> 
 			  | "if" "(" <expr> ")" <block> "else" <block>			
@@ -19,9 +27,11 @@ statementList
 
 <assignment> ::= IDENTIFIER "=" <expr> .
 
-<decl> ::= TYPE IDENTIFIER .
+<decl> ::= "bool" IDENTIFIER | "int" IDENTIFIER .
 
 <block> ::= "{" <statementList> "}" .
+
+(* Basic Expressions *)
 
 <expr> ::= <expr> "or" <andExpr> | <andExpr> .
 
