@@ -12,7 +12,7 @@ statementList
 
 <statementList> ::= | <statement> <statementList> .
 
-<statement> ::= <expr> ";" 
+<statement> ::= <incExpr> ";" 
 			  | <block> 
 			  | <assignment> ";"
 			  | <decl> ";" 
