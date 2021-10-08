@@ -71,4 +71,4 @@ statementList
 <mutable> ::= IDENTIFIER .
 <immutable> ::= "true" | "false" | INT_LITERAL | "(" <expr> ")" . 
 (* We may reduce to "(" <orExpr> ")" instead to disallow expressions like
-   (++5) - 3 to be part of the language. *)
+   (++x) - 3 to be part of the language. *)
