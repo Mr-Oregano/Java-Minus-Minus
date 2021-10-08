@@ -12,7 +12,7 @@ statementList
 
 <statementList> ::= | <statement> <statementList> .
 
-<statement> ::= <incExpr> ";" 
+<statement> ::= <incStmt> ";" 
 			  | <block> 
 			  | <assignment> ";"
 			  | <decl> ";" 
@@ -24,6 +24,9 @@ statementList
 			  | ";" .
 
 (* Basic Statements *)
+<incStmt> ::= <incOp> IDENTIFIER | IDENTIFIER <incOp> .
+<incOp> ::= "++" | "--".
+
 <assignment> ::= IDENTIFIER "=" <expr> .
 
 <decl> ::= "bool" IDENTIFIER | "int" IDENTIFIER .
@@ -36,23 +39,18 @@ statementList
 <forLoop> ::= "for" "(" <forInit> ";" <forCond> ";" <forIter> ")" <block> .
 <forInit> ::= <assignment> .
 <forCond> ::= <expr> .
-<forIter> ::= <assignment> | <incExpr> .
+<forIter> ::= <assignment> | <incStmt> .
 
 (* Basic Expressions *)
 
-<expr> ::= <orExpr> | <incExpr> .
+<expr> ::= <expr> "or" <andExpr> | <andExpr> .
+<andExpr> ::= <andExpr> "and" <equalExpr> | <equalExpr> .
 
-<incExpr> ::= <incOp> <mutable> | <mutable> <incOp> .
-<incOp> ::= "++" | "--".
+<equalExpr> ::= <equalExpr> <equalOp> <relExpr> | <relExpr> .
+<equalOp> ::= "==" | "!=" .
 
-<orExpr> ::= <orExpr> "or" <andExpr> | <andExpr> .
-<andExpr> ::= <andExpr> "and" <notExpr> | <notExpr> .
-<notExpr> ::= "not" <notExpr> | <relExpr> .					
-
-<relExpr> ::= <relExpr> <relOp> <absExpr> | <absExpr> .
-<relOp> ::= "<" | ">" | "==" | "!=" .
-
-<absExpr> ::=  "abs" <absExpr> | <sumExpr> .
+<relExpr> ::= <relExpr> <relOp> <sumExpr> | <sumExpr> .
+<relOp> ::= "<" | ">" .
 
 <sumExpr> ::= <sumExpr> <addOp> <mulExpr> | <mulExpr> .
 <addOp> ::= "+" | "-" .
@@ -60,15 +58,13 @@ statementList
 <mulExpr> ::= <mulExpr> <mulOp> <unaryExpr> | <unaryExpr> .
 <mulOp> ::= "*" | "/" | "%" .
 
-(* We DO NOT want to allow ~~5 expressions to exist 
-   so <unaryExpr> will be forced to resolve to <expExpr> for all paths. *)
-<unaryExpr> ::= "~" <expExpr> | <expExpr> .
+<unaryExpr> ::= <unaryOp> <unaryExpr> | <expExpr> .
+<unaryOp> ::= "abs" | "not" | "~" .
 
 <expExpr> ::= <factor> "^" <expExpr> | <factor> .
 
-<factor> ::= <mutable> | <immutable> .
-
-<mutable> ::= IDENTIFIER .
-<immutable> ::= "true" | "false" | INT_LITERAL | "(" <expr> ")" . 
-(* We may reduce to "(" <orExpr> ")" instead to disallow expressions like
-   (++x) - 3 to be part of the language. *)
+<factor> ::= IDENTIFIER 
+		   | "true"
+		   | "false" 
+		   | INT_LITERAL 
+		   | "(" <expr> ")" .

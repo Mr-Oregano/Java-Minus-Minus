@@ -55,6 +55,8 @@ for (y = 0; y < 35; ++y)
 for (y = 0; y < 35; y = y + 3)
 {
 	++x;
+	int z;
+	z = abs ~ abs 8;
 }
 
 if (true)
