@@ -18,16 +18,25 @@ statementList
 			  | <decl> ";" 
 			  | "if" "(" <expr> ")" <block> 
 			  | "if" "(" <expr> ")" <block> "else" <block>			
-			  | "while" "(" <expr> ")" <block>
-			  | "for" "(" <assignment> ";" <expr> ";" <expr> ")" <block> 
+			  | <whileLoop>
+			  | <forLoop>
 			  | "print" "(" <expr> ")" ";"
 			  | ";" .
 
+(* Basic Statements *)
 <assignment> ::= IDENTIFIER "=" <expr> .
 
 <decl> ::= "bool" IDENTIFIER | "int" IDENTIFIER .
 
 <block> ::= "{" <statementList> "}" .
+
+(* Basic loops *)
+<whileLoop> ::= "while" "(" <expr> ")" <block> .
+
+<forLoop> ::= "for" "(" <forInit> ";" <forCond> ";" <forIter> ")" <block> .
+<forInit> ::= <assignment> .
+<forCond> ::= <expr> .
+<forIter> ::= <assignment> | <incExpr> .
 
 (* Basic Expressions *)
 

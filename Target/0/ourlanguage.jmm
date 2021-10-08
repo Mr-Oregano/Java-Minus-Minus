@@ -50,6 +50,13 @@ for (y = 0; y < 35; ++y)
 	--x;
 }
 
+// forloops can also have assignments as an iterator
+//
+for (y = 0; y < 35; y = y + 3)
+{
+	++x;
+}
+
 if (true)
 {
 
