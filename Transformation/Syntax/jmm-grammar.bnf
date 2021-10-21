@@ -24,8 +24,10 @@ statementList
 			  | ";" .
 
 (* Basic Statements *)
-<incStmt> ::= <incOp> IDENTIFIER | IDENTIFIER <incOp> .
-<incOp> ::= "++" | "--".
+<incStmt> ::= "++" IDENTIFIER 
+			| "--" IDENTIFIER
+			| IDENTIFIER "++"
+			| IDENTIFIER "--" .
 
 <assignment> ::= IDENTIFIER "=" <expr> .
 
@@ -46,20 +48,27 @@ statementList
 <expr> ::= <expr> "or" <andExpr> | <andExpr> .
 <andExpr> ::= <andExpr> "and" <equalExpr> | <equalExpr> .
 
-<equalExpr> ::= <equalExpr> <equalOp> <relExpr> | <relExpr> .
-<equalOp> ::= "==" | "!=" .
+<equalExpr> ::= <equalExpr> "==" <relExpr> 
+			  | <equalExpr> "!=" <relExpr> 
+			  | <relExpr> .
 
-<relExpr> ::= <relExpr> <relOp> <sumExpr> | <sumExpr> .
-<relOp> ::= "<" | ">" .
+<relExpr> ::= <relExpr> "<" <sumExpr> 
+		  	| <relExpr> ">" <sumExpr> 
+			| <sumExpr> .
 
-<sumExpr> ::= <sumExpr> <addOp> <mulExpr> | <mulExpr> .
-<addOp> ::= "+" | "-" .
+<sumExpr> ::= <sumExpr> "+" <mulExpr> 
+			| <sumExpr> "-" <mulExpr> 
+			| <mulExpr> .
 
-<mulExpr> ::= <mulExpr> <mulOp> <unaryExpr> | <unaryExpr> .
-<mulOp> ::= "*" | "/" | "%" .
+<mulExpr> ::= <mulExpr> "*"  <unaryExpr> 
+			| <mulExpr> "/"  <unaryExpr>
+			| <mulExpr> "%"  <unaryExpr>
+			| <unaryExpr> .
 
-<unaryExpr> ::= <unaryOp> <unaryExpr> | <expExpr> .
-<unaryOp> ::= "abs" | "not" | "~" .
+<unaryExpr> ::= "abs" <unaryExpr> 
+			  | "not" <unaryExpr> 
+			  | "~" <unaryExpr> 
+			  | <expExpr> .
 
 <expExpr> ::= <factor> "^" <expExpr> | <factor> .
 
