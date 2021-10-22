@@ -1,35 +1,30 @@
 USE_LR_PARSER
 
 (* Grammar for the Java Minus Minus language 
-	Authors:
-		Klim Fedorchuk
-		Dylan Keefer
-		Connor Peterson
-		Chaz Brock
+    Authors:
+        Klim Fedorchuk
+        Dylan Keefer
+        Connor Peterson
+        Chaz Brock
 *)
 
 statementList
 
 <statementList> ::= | <statement> <statementList> .
 
-<statement> ::= <incStmt> ";" 
-			  | <block> 
-			  | <assignment> ";"
-			  | <decl> ";" 
-			  | "if" "(" <expr> ")" <block> 
-			  | "if" "(" <expr> ")" <block> "else" <block>			
-			  | <whileLoop>
-			  | <forLoop>
-			  | "print" "(" <expr> ")" ";"
-			  | ";" .
+<statement> ::= <block> 
+              | <assignment> ";"
+              | <decl> ";" 
+              | "if" "(" <expr> ")" <block> 
+              | "if" "(" <expr> ")" <block> "else" <block>			
+              | <whileLoop>
+              | <forLoop>
+              | "print" "(" <expr> ")" ";"
+              | ";" .
 
 (* Basic Statements *)
-<incStmt> ::= "++" IDENTIFIER 
-			| "--" IDENTIFIER
-			| IDENTIFIER "++"
-			| IDENTIFIER "--" .
 
-<assignment> ::= IDENTIFIER "=" <expr> .
+<assignment> ::= IDENTIFIER "=" <expr> | <decID> .
 
 <decl> ::= "bool" IDENTIFIER | "int" IDENTIFIER .
 
@@ -41,7 +36,7 @@ statementList
 <forLoop> ::= "for" "(" <forInit> ";" <forCond> ";" <forIter> ")" <block> .
 <forInit> ::= <assignment> .
 <forCond> ::= <expr> .
-<forIter> ::= <assignment> | <incStmt> .
+<forIter> ::= <assignment> .
 
 (* Basic Expressions *)
 
@@ -49,31 +44,37 @@ statementList
 <andExpr> ::= <andExpr> "and" <equalExpr> | <equalExpr> .
 
 <equalExpr> ::= <equalExpr> "==" <relExpr> 
-			  | <equalExpr> "!=" <relExpr> 
-			  | <relExpr> .
+              | <equalExpr> "!=" <relExpr> 
+              | <relExpr> .
 
 <relExpr> ::= <relExpr> "<" <sumExpr> 
-		  	| <relExpr> ">" <sumExpr> 
-			| <sumExpr> .
+            | <relExpr> ">" <sumExpr> 
+            | <sumExpr> .
 
 <sumExpr> ::= <sumExpr> "+" <mulExpr> 
-			| <sumExpr> "-" <mulExpr> 
-			| <mulExpr> .
+            | <sumExpr> "-" <mulExpr> 
+            | <mulExpr> .
 
 <mulExpr> ::= <mulExpr> "*"  <unaryExpr> 
-			| <mulExpr> "/"  <unaryExpr>
-			| <mulExpr> "%"  <unaryExpr>
-			| <unaryExpr> .
+            | <mulExpr> "/"  <unaryExpr>
+            | <mulExpr> "%"  <unaryExpr>
+            | <unaryExpr> .
 
 <unaryExpr> ::= "abs" <unaryExpr> 
-			  | "not" <unaryExpr> 
-			  | "~" <unaryExpr> 
-			  | <expExpr> .
+              | "not" <unaryExpr> 
+              | "~" <unaryExpr> 
+              | <expExpr> .
 
 <expExpr> ::= <factor> "^" <expExpr> | <factor> .
 
 <factor> ::= IDENTIFIER 
-		   | "true"
-		   | "false" 
-		   | INT_LITERAL 
-		   | "(" <expr> ")" .
+           | "true"
+           | "false" 
+           | INT_LITERAL 
+           | "(" <expr> ")" 
+           | <decID> .
+
+<decID> ::= "++" IDENTIFIER 
+          | "--" IDENTIFIER
+          | IDENTIFIER "++"
+          | IDENTIFIER "--" .
