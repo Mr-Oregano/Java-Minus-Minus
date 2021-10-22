@@ -80,18 +80,18 @@ M([[ "while" "(" expr1 ")" block1 ]], m)
                 val m2 = M( block1, m1 )    
                 val m3 = M( [[ "while" "(" expr1 ")" block1 ]], m2 )           
             in
-                m1
+                m3
             end   
         else m1
     end
 
 (* forLoop *)
 
-M([[ "for" "(" forInit1 ";" forCond1 ";" forIter1 ")" block1 ]], m)
+M([[ "for" "(" assignment1 ";" expr1 ";" assignment1 ")" block1 ]], m)
     let
-        val m1 = M(forInit1, m)
+        val m1 = M(assignment1, m)
     in
-        N(forCond1, forIter1 ,block1, m1)
+        N(expr1, assignment1 ,block1, m1)
     end
     
 N(cond, iter, block, m)
@@ -104,15 +104,10 @@ N(cond, iter, block, m)
                 val m3 = M( iter, m2 )
                 val m4 = N( cond, iter, block, m3 )
             in
-                m1
+                m4
             end   
         else m1
     end
-
-M(forInit1, m) = M([[ assignment1 ]], m)
-E'(forCond1, m) = E'([[ expr1 ]], m)
-M(forIter1, m) = M([[ assignment1 ]], m)
-M(forIter1, m) = M([[ decID1 ]], m)
 
 (* expr: *)
 

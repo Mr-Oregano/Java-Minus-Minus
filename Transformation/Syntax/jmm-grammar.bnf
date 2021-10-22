@@ -33,10 +33,7 @@ statementList
 (* Basic loops *)
 <whileLoop> ::= "while" "(" <expr> ")" <block> .
 
-<forLoop> ::= "for" "(" <forInit> ";" <forCond> ";" <forIter> ")" <block> .
-<forInit> ::= <assignment> .
-<forCond> ::= <expr> .
-<forIter> ::= <assignment> .
+<forLoop> ::= "for" "(" <assignment> ";" <expr> ";" <assignment> ")" <block> .
 
 (* Basic Expressions *)
 
@@ -55,9 +52,9 @@ statementList
             | <sumExpr> "-" <mulExpr> 
             | <mulExpr> .
 
-<mulExpr> ::= <mulExpr> "*"  <unaryExpr> 
-            | <mulExpr> "/"  <unaryExpr>
-            | <mulExpr> "%"  <unaryExpr>
+<mulExpr> ::= <mulExpr> "*" <unaryExpr> 
+            | <mulExpr> "/" <unaryExpr>
+            | <mulExpr> "%" <unaryExpr>
             | <unaryExpr> .
 
 <unaryExpr> ::= "abs" <unaryExpr> 
