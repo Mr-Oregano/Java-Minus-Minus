@@ -1,40 +1,40 @@
 (* statementList  *)
 
-M([[ ε ]], m) = m
-M([[ statement₁ statementList₁ ]], m) = 
+M([[  ]], m) = m
+M([[ statement1 statementList1 ]], m) = 
     let
-        val m1 = M( statement₁, m )
-        val m2 = M( statementList₁, m1 )
+        val m1 = M( statement1, m )
+        val m2 = M( statementList1, m1 )
     in
         m2
     end
 
 (* statement: *)
 
-M([[ block₁ ]]) = M(block₁, m)
-M([[ assignment₁ ";" ]], m) = M(assignment₁, m)
-M([[ decl₁ ";"]], m) = M(decl₁, m) = M(decl₁, m)
-M([[ "if" "(" expr₁ ")" block₁ ]], m) =
+M([[ block1 ]]) = M(block1, m)
+M([[ assignment1 ";" ]], m) = M(assignment1, m)
+M([[ decl1 ";"]], m) = M(decl1, m) = M(decl1, m)
+M([[ "if" "(" expr1 ")" block1 ]], m) =
     let
-        val (v, m1) = E'(expr₁, m)
+        val (v, m1) = E'(expr1, m)
     in
-        if v then M(block₁, m1)
+        if v then M(block1, m1)
         else m1
     end
 
-M([[ "if" "(" expr₁ ")" block₁ "else" block₂ ]], m) = 
+M([[ "if" "(" expr1 ")" block1 "else" block2 ]], m) = 
     let
-        val (v, m1) = E'(expr₁, m)
+        val (v, m1) = E'(expr1, m)
     in
-        if v then M(block₁, m1)
-        else M(block₂, m1)
+        if v then M(block1, m1)
+        else M(block2, m1)
     end
 
-M([[ whileLoop₁ ]], m) = M(whileLoop₁, m)
-M([[ forLoop₁ ]], m) = M(forLoop₁, m)
-M([[ "print" "(" expr₁ ")" ";" ]], m) = 
+M([[ whileLoop1 ]], m) = M(whileLoop1, m)
+M([[ forLoop1 ]], m) = M(forLoop1, m)
+M([[ "print" "(" expr1 ")" ";" ]], m) = 
     let 
-        val (v, m1) = E'(expr₁, m)
+        val (v, m1) = E'(expr1, m)
         print(v) (* Assume print is function *)
     in
         m1
@@ -44,18 +44,18 @@ M([[ ";" ]], m) = m
 
 (* assignment *)
 
-M([[ IDENTIFIER "=" expr₁ ]], m) = 
+M([[ IDENTIFIER "=" expr1 ]], m) = 
     let
-        val (v, m1) = E'(expr₁, m)
+        val (v, m1) = E'(expr1, m)
         val loc = getLoc(accessEnv(IDENTIFIER, m))
         val m2 = updateStore(loc, v, m1)
     in
         m2
     end
 
-M([[ decID₁ ";" ]], m) = 
+M([[ decID1 ";" ]], m) = 
     let 
-        val (v, m1) = E'(decID₁, m)
+        val (v, m1) = E'(decID1, m)
     in
         m1
     end
@@ -67,18 +67,18 @@ M([[ "int" IDENTIFIER]], m) = updateEnv(IDENTIFIER, INT, new(), m)
 
 (* block *)
 
-M([[ "{" statementList₁ "}" ]], m) = M(statementList₁, m)
+M([[ "{" statementList1 "}" ]], m) = M(statementList1, m)
 
 (* whileLoop *)
 
-M([[ "while" "(" expr₁ ")" block₁ ]], m)
+M([[ "while" "(" expr1 ")" block1 ]], m)
     let
-        val (v, m1) = E'( expr₁, m )    
+        val (v, m1) = E'( expr1, m )    
     in
         if v then 
             let              
-                val m2 = M( block₁, m1 )    
-                val m3 = M( [[ "while" "(" expr₁ ")" block₁ ]], m2 )           
+                val m2 = M( block1, m1 )    
+                val m3 = M( [[ "while" "(" expr1 ")" block1 ]], m2 )           
             in
                 m1
             end   
@@ -87,11 +87,11 @@ M([[ "while" "(" expr₁ ")" block₁ ]], m)
 
 (* forLoop *)
 
-M([[ "for" "(" forInit₁ ";" forCond₁ ";" forIter₁ ")" block₁ ]], m)
+M([[ "for" "(" forInit1 ";" forCond1 ";" forIter1 ")" block1 ]], m)
     let
-        val m1 = M(forInit₁, m)
+        val m1 = M(forInit1, m)
     in
-        N(forCond₁, forIter₁ ,block₁, m1)
+        N(forCond1, forIter1 ,block1, m1)
     end
     
 N(cond, iter, block, m)
@@ -109,159 +109,159 @@ N(cond, iter, block, m)
         else m1
     end
 
-M(forInit₁, m) = M([[ assignment₁ ]], m)
-E'(forCond₁, m) = E'([[ expr₁ ]], m)
-M(forIter₁, m) = M([[ assignment₁ ]], m)
-M(forIter₁, m) = M([[ decID₁ ]], m)
+M(forInit1, m) = M([[ assignment1 ]], m)
+E'(forCond1, m) = E'([[ expr1 ]], m)
+M(forIter1, m) = M([[ assignment1 ]], m)
+M(forIter1, m) = M([[ decID1 ]], m)
 
 (* expr: *)
 
-E'([[ expr₁ "or" andExpr₁ ]], m) = 
+E'([[ expr1 "or" andExpr1 ]], m) = 
     let 
-        val (v1, m1) = E'(expr₁, m)
+        val (v1, m1) = E'(expr1, m)
     in
         if v1 then (v1, m1)
-        else E'(andExpr₁, m1)
+        else E'(andExpr1, m1)
     end
 
-E'([[ andExpr₁ ]], m) = E'(andExpr₁, m)
+E'([[ andExpr1 ]], m) = E'(andExpr1, m)
 
 (* andExpr *)
 
-E'([[ andExpr₁ "and" equalExpr₁ ]], m) =
+E'([[ andExpr1 "and" equalExpr1 ]], m) =
     let
-        val (v1, m1) = E'(andExpr₁, m)
+        val (v1, m1) = E'(andExpr1, m)
     in
         if not v1 then (v1, m1) 
-        else E'(equalExpr₁, m1)
+        else E'(equalExpr1, m1)
     end
 
-E'([[ equalExpr₁ ]], m) = E'(equalExpr₁, m)
+E'([[ equalExpr1 ]], m) = E'(equalExpr1, m)
 
 (* equalExpr *)
 
-E'([[ equalExpr₁ "==" relExpr₁ ]], m) =
+E'([[ equalExpr1 "==" relExpr1 ]], m) =
     let
-        val (v1, m1) = E'(equalExpr₁, m)
-        val (v2, m2) = E'(relExpr₁, m1)
+        val (v1, m1) = E'(equalExpr1, m)
+        val (v2, m2) = E'(relExpr1, m1)
     in
         (v1 = v2, m2)
     end
 
-E'([[ equalExpr₁ "!=" relExpr₁ ]], m) =  
+E'([[ equalExpr1 "!=" relExpr1 ]], m) =  
     let
-        val (v1, m1) = E'(equalExpr₁, m)
-        val (v2, m2) = E'(relExpr₁, m1)
+        val (v1, m1) = E'(equalExpr1, m)
+        val (v2, m2) = E'(relExpr1, m1)
     in
         (v1 <> v2, m2)
     end
 
-E'([[ relExpr₁ ]], m) = E'(relExpr₁, m)
+E'([[ relExpr1 ]], m) = E'(relExpr1, m)
     
 (* relExpr *)
 
-E'([[ relExpr₁ "<" sumExpr₁ ]], m) =
+E'([[ relExpr1 "<" sumExpr1 ]], m) =
     let
-        val (v1, m1) = E'(relExpr₁, m)
-        val (v2, m2) = E'(sumExpr₁, m1)
+        val (v1, m1) = E'(relExpr1, m)
+        val (v2, m2) = E'(sumExpr1, m1)
     in
         (v1 < v2, m2)
     end
 
-E'([[ relExpr₁ ">" sumExpr₁ ]], m) =
+E'([[ relExpr1 ">" sumExpr1 ]], m) =
     let
-        val (v1, m1) = E'(relExpr₁, m)
-        val (v2, m2) = E'(sumExpr₁, m1)
+        val (v1, m1) = E'(relExpr1, m)
+        val (v2, m2) = E'(sumExpr1, m1)
     in
         (v1 > v2, m2)
     end
 
-E'([[ sumExpr₁ ]], m) = E'(sumExpr₁, m)
+E'([[ sumExpr1 ]], m) = E'(sumExpr1, m)
 
 (* sumExpr *)
 
-E'([[ sumExpr₁ "+" mulExpr₁ ]], m ) = 
+E'([[ sumExpr1 "+" mulExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(sumExpr₁, m)
-        val (v2, m2) = E'(mulExpr₁, m1)
+        val (v1, m1) = E'(sumExpr1, m)
+        val (v2, m2) = E'(mulExpr1, m1)
     in
         (v1 + v2, m2)
     end
 
-E'([[ sumExpr₁ "-" mulExpr₁ ]], m ) = 
+E'([[ sumExpr1 "-" mulExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(sumExpr₁, m)
-        val (v2, m2) = E'(mulExpr₁, m1)
+        val (v1, m1) = E'(sumExpr1, m)
+        val (v2, m2) = E'(mulExpr1, m1)
     in
         (v1 - v2, m2)
     end
 
-E'([[ mulExpr₁ ]], m ) = E'(mulExpr₁, m)
+E'([[ mulExpr1 ]], m ) = E'(mulExpr1, m)
 
 (* mulExpr *)
 
-E'([[ mulExpr₁ "*" unaryExpr₁ ]], m ) = 
+E'([[ mulExpr1 "*" unaryExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(mulExpr₁, m)
-        val (v2, m2) = E'(unaryExpr₁, m1)
+        val (v1, m1) = E'(mulExpr1, m)
+        val (v2, m2) = E'(unaryExpr1, m1)
     in
         (v1 * v2, m2)
     end
 
-E'([[ mulExpr₁ "/" unaryExpr₁ ]], m ) = 
+E'([[ mulExpr1 "/" unaryExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(mulExpr₁, m)
-        val (v2, m2) = E'(unaryExpr₁, m1)
+        val (v1, m1) = E'(mulExpr1, m)
+        val (v2, m2) = E'(unaryExpr1, m1)
     in
         (v1 div v2, m2)
     end
 
-E'([[ mulExpr₁ "%" unaryExpr₁ ]], m ) = 
+E'([[ mulExpr1 "%" unaryExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(mulExpr₁, m)
-        val (v2, m2) = E'(unaryExpr₁, m1)
+        val (v1, m1) = E'(mulExpr1, m)
+        val (v2, m2) = E'(unaryExpr1, m1)
     in
         (v1 mod v2, m2)
     end
 
-E'([[ unaryExpr₁ ]], m ) = E'(unaryExpr₁, m)
+E'([[ unaryExpr1 ]], m ) = E'(unaryExpr1, m)
     
 (* unaryExpr *)
 
-E'([[ "abs" unaryExpr₁ ]], m ) = 
+E'([[ "abs" unaryExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(unaryExpr₁, m)
+        val (v1, m1) = E'(unaryExpr1, m)
     in
         (abs(v1), m1) (* Assume abs is a function *)
     end
 
-E'([[ "not" unaryExpr₁ ]], m ) = 
+E'([[ "not" unaryExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(unaryExpr₁, m1)
+        val (v1, m1) = E'(unaryExpr1, m1)
     in
         (not v1, m1) 
     end
 
-E'([[ "~" unaryExpr₁ ]], m ) = 
+E'([[ "~" unaryExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(unaryExpr₁, m1)
+        val (v1, m1) = E'(unaryExpr1, m1)
     in
         (~v1, m2)
     end
 
-E'([[ expExpr₁ ]], m ) = E'(expExpr₁, m)
+E'([[ expExpr1 ]], m ) = E'(expExpr1, m)
 
 (* expExpr *)
     
-E'([[ factor₁ "^" expExpr₁ ]], m ) = 
+E'([[ factor1 "^" expExpr1 ]], m ) = 
     let
-        val (v1, m1) = E'(factor₁, m)
-        val (v2, m2) = E'(expExpr₁, m1)
+        val (v1, m1) = E'(factor1, m)
+        val (v2, m2) = E'(expExpr1, m1)
     in
         (exp(v1, v2), m2) (* Assume exp is a function *)
     end
 
-E'([[ factor₁ ]], m ) = E'(factor₁, m)
+E'([[ factor1 ]], m ) = E'(factor1, m)
 
 (* factor *)
 
@@ -276,8 +276,8 @@ E'([[ IDENTIFIER ]], m ) =
 E'([[ "true" ]], m ) = true
 E'([[ "false" ]], m ) = false
 E'([[ INT_LITERAL ]], m ) = INT_LITERAL
-E'([[ "(" expr₁ ")" ]], m ) = E'(expr₁)
-E'([[ decID₁ ]], m) = E'(decID₁, m)
+E'([[ "(" expr1 ")" ]], m ) = E'(expr1)
+E'([[ decID1 ]], m) = E'(decID1, m)
 
 (* decID *)
 
@@ -296,7 +296,7 @@ E'([[ "--" IDENTIFIER ]], m) =
         val loc = getLoc(accessEnv(IDENTIFIER, m))
         val v = accessStore(loc, m)
         val v2 = v - 1
-        val m1 = updateStore(loc, v - 1, m)
+        val m1 = updateStore(loc, v2, m)
     in
         (v2, m1)
     end
@@ -316,7 +316,7 @@ E'([[  IDENTIFIER "--" ]], m) =
         val loc = getLoc(accessEnv(IDENTIFIER, m))
         val v = accessStore(loc, m)
         val v2 = v - 1
-        val m1 = updateStore(loc, v - 1, m)
+        val m1 = updateStore(loc, v2, m)
     in
         (v, m1)
     end
