@@ -274,9 +274,9 @@ E'([[ IDENTIFIER ]], m) =
         (v, m)
     end
 
-E'([[ "true" ]], m) = true
-E'([[ "false" ]], m) = false
-E'([[ INT_LITERAL ]], m) = INT_LITERAL
+E'([[ "true" ]], m) = (true, m)
+E'([[ "false" ]], m) = (false, m)
+E'([[ INT_LITERAL ]], m) = (INT_LITERAL, m)
 E'([[ "(" expr1 ")" ]], m) = E'(expr1)
 E'([[ decID1 ]], m) = E'(decID1, m)
 
