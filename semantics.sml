@@ -67,7 +67,13 @@ M([[ "int" IDENTIFIER]], m) = updateEnv(IDENTIFIER, INT, new(), m)
 
 (* block *)
 
-M([[ "{" statementList1 "}" ]], m) = M(statementList1, m)
+M([[ "{" statementList1 "}" ]], (env, str)) = 
+	let
+		val (env1, str1) = M(statementList1, (env, str))
+		val m1 = (env, str1)
+	in
+		m1
+	end
 
 (* whileLoop *)
 
