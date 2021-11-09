@@ -14,30 +14,27 @@ structure UserDefined : TL_INTERFACE_SIG = struct
 
     val functions = 
 
-        Strategic_Views.functions
-        @
         Clocks.functions
         @
         Ids.functions
         @
         Environment.functions
         @
-        Input_Output.functions        
+        Input_Output.functions
         @
         PrettyPrint.functions
         @
-        Util.functions        
+        Strategic_Views.functions
         @
-        UniversalInterface.functions
+        Util.functions     
+        
         @
-        BasicOperations.functions
-        @
-        Properties.functions
+        Interpreter.functions
         ;
 
 
-    val _ = Util.checkUnique functions;
-    
+	val _ = Util.checkUnique functions;
+	
 (* ------------------------------------------------------------------------------------------- *)
 end; (* struct *)
 (* ------------------------------------------------------------------------------------------- *)

@@ -29,7 +29,6 @@ local
     $(TL)/Engine/General_Libraries/PrettyPrint.sml
     $(TL)/Engine/General_Libraries/Strategic_Views.sml
 in
-
     ann
         "nonexhaustiveMatch error"
         "redundantMatch error"
@@ -44,15 +43,12 @@ in
 
         Interface_Sig.sml
         Util.sml
-
-        Universal/UniversalUtil.sml
-        Universal/Counters.sml
-        Universal/Sets.sml
-        Universal/Interface.sml
-
-        Properties.sml
-        basic_operations.sml
-
+        
+        Interpreter/model.sml
+        Interpreter/semantics.sml
+        Interpreter/typeChecker.sml
+        Interpreter/interpreter.sml
+    
         UserDefined.sml
     end
 end
