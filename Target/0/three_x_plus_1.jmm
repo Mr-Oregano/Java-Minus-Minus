@@ -1,0 +1,117 @@
+
+int sum;
+int sum2;
+
+sum = 0;
+sum2 = 0;
+
+{
+	int x;
+
+	int i;
+	for (i = 1; i < 32; i++)
+	{
+		x = i;
+		while (x != 1)
+		{
+			int j;
+			for (j = 1; j < 3; j++)
+			{
+				if (x % 2 == 0)
+				{
+					x = x / 2;
+				}
+				else
+				{
+					x = 3*x + 1;
+				}
+				sum = sum + 3;
+			}
+		}
+	}
+}
+
+{
+    int sum1;
+    sum1 = 0;
+    int x;
+
+    int i;
+    for (i = 15; i > 1; --i) 
+	{
+        x = i;
+        while (x != 1) 
+		{
+            int j;
+            for (j = 1; j < 3; ++j)
+			{
+                if (x % 2 == 0) 
+				{
+                    x = x / 2;
+                } 
+                else 
+				{
+                    x = 3 * x + 1;
+                }
+            }
+            sum1 = sum1 + 3;
+        }
+    }
+    print(sum1);
+}
+
+{
+	int x;
+	int i;
+
+	for (i = ~24; i < ~1; ++i)
+	{
+		x = i;
+
+		while( x != 1)
+		{
+			int j;
+			for (j = 1; j < 3; ++j)
+			{
+				if (x % 2 == 0) 
+				{
+					x = abs(x / 2);
+				}
+				else
+				{
+					x = (abs(3*x) + 1);
+				} 
+			}
+
+			sum2 = ((sum2 + 3));
+		}
+	}
+	print(sum2);
+}
+print(sum);
+
+if (sum2 == 423 and not(sum != 888))
+{
+    if ((sum2 + 465 > sum or sum2 + 465 == sum) and 
+        (sum < sum2 + 465 or sum == sum2 + 465))
+    {
+           if (2^0 < 2 and 2^1 > 2 or 2^3 < 8)
+           {
+               print(1);
+           }
+           else
+           {
+               print(2);
+           } 
+    }
+    else
+    {
+        print(3);
+    }
+}
+else
+{
+    print(4);
+}
+
+    
