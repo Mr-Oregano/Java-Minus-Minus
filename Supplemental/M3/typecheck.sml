@@ -66,7 +66,6 @@ typeCheck([[ int IDENTIFIER]], m) = updateEnv(IDENTIFIER, INT, new(), m)
 
 (* block *)
 
-(* DOUBLE CHECK *)
 typeCheck([[ { statementList1 } ]], m) = 
 	let
 		val m1 = typeCheck(statementList1, m)
@@ -129,7 +128,7 @@ typeOf([[ equalExpr1 == relExpr1 ]], m) =
         val t1 = typeOf(equalExpr1, m)
         val t2 = typeOf(relExpr1, m)
     in
-        if t1 = t2 then BOOL else ERROR
+        if t1 = t2 andalso t1 <> ERROR then BOOL else ERROR
     end
 
 typeOf([[ equalExpr1 != relExpr1 ]], m) =  
@@ -137,7 +136,7 @@ typeOf([[ equalExpr1 != relExpr1 ]], m) =
         val t1 = typeOf(equalExpr1, m)
         val t2 = typeOf(relExpr1, m1)
     in
-        if t1 = t2 then BOOL else ERROR
+        if t1 = t2 andalso t1 <> ERROR then BOOL else ERROR
     end
 
 typeOf([[ relExpr1 ]], m) = typeOf(relExpr1, m)
@@ -223,8 +222,7 @@ typeOf([[ abs unaryExpr1 ]], m) =
     let
         val t1 = typeOf(unaryExpr1, m)
     in
-        if t1 = INT then INT
-        else ERROR
+        if t1 = INT then INT else ERROR
     end
 
 typeOf([[ not unaryExpr1 ]], m) = 
