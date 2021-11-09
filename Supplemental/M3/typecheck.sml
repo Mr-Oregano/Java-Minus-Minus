@@ -129,7 +129,7 @@ typeOf([[ equalExpr1 == relExpr1 ]], m) =
         val t1 = typeOf(equalExpr1, m)
         val t2 = typeOf(relExpr1, m)
     in
-        if t1 = t2 then t1 else ERROR
+        if t1 = t2 then BOOL else ERROR
     end
 
 typeOf([[ equalExpr1 != relExpr1 ]], m) =  
@@ -137,7 +137,7 @@ typeOf([[ equalExpr1 != relExpr1 ]], m) =
         val t1 = typeOf(equalExpr1, m)
         val t2 = typeOf(relExpr1, m1)
     in
-        if t1 = t2 then t1 else ERROR
+        if t1 = t2 then BOOL else ERROR
     end
 
 typeOf([[ relExpr1 ]], m) = typeOf(relExpr1, m)
@@ -149,7 +149,7 @@ typeOf([[ relExpr1 < sumExpr1 ]], m) =
         val t1 = typeOf(relExpr1, m)
         val t2 = typeOf(sumExpr1, m1)
     in
-        if t1 = t2 andalso t1 = INT then INT 
+        if t1 = t2 andalso t1 = INT then BOOL 
 		else ERROR
     end
 
@@ -158,7 +158,7 @@ typeOf([[ relExpr1 > sumExpr1 ]], m) =
         val t1 = typeOf(relExpr1, m)
         val t2 = typeOf(sumExpr1, m1)
     in
-        if t1 = t2 andalso t1 = INT then INT 
+        if t1 = t2 andalso t1 = INT then BOOL 
 		else ERROR
     end
 
