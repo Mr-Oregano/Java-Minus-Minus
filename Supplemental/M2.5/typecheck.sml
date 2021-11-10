@@ -13,7 +13,7 @@ typeCheck([[ statement1 statementList1 ]], m) =
 
 typeCheck([[ block1 ]]) = typeCheck(block1, m)
 typeCheck([[ assignment1 ; ]], m) = typeCheck(assignment1, m)
-typeCheck([[ decl1 ; ]], m) = typeCheck(decl1, m) = typeCheck(decl1, m)
+typeCheck([[ decl1 ; ]], m) = typeCheck(decl1, m)
 typeCheck([[ if ( expr1 ) block1 ]], m) =
     let
         val t1 = typeOf(expr1, m)
@@ -89,7 +89,7 @@ typeCheck([[ for ( assignment1 ; expr1 ; assignment2 ) block1 ]], m)
     let
         val m1 = typeCheck(assignment1, m)    
         val t1 = typeOf(expr1, m1)
-        val m2 = typeCheck(assignment1, m1)    
+        val m2 = typeCheck(assignment2, m1)    
 		val m3 = typeCheck(block1, m2)
     in
         if t1 = BOOL then m3 else raise model_error
