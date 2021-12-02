@@ -56,7 +56,7 @@ typeCheck([[ decoratedID1 ; ]], m) =
 	let 
 		val t1 = typeOf(decoratedID1)
 	in
-		if t1 <> ERROR then m else raise model_error
+		if t1 = INT then m else raise model_error
 	end
 
 (* declaration *)
