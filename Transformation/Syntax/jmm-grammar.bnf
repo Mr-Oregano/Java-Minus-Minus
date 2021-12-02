@@ -24,7 +24,7 @@ statementList
 
 (* Basic Statements *)
 
-<assignment> ::= IDENTIFIER "=" <expr> | <decID> .
+<assignment> ::= IDENTIFIER "=" <expr> | <decoratedID> .
 
 <decl> ::= "bool" IDENTIFIER | "int" IDENTIFIER .
 
@@ -69,9 +69,9 @@ statementList
            | "false" 
            | INT_LITERAL 
            | "(" <expr> ")" 
-           | <decID> .
+           | <decoratedID> .
 
-<decID> ::= "++" IDENTIFIER 
+<decoratedID> ::= "++" IDENTIFIER 
           | "--" IDENTIFIER
           | IDENTIFIER "++"
           | IDENTIFIER "--" .

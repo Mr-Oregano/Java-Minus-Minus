@@ -52,9 +52,9 @@ typeCheck([[ IDENTIFIER = expr1 ]], m) =
         if t1 = t2 then m else raise model_error
     end
 
-typeCheck([[ decID1 ; ]], m) = 
+typeCheck([[ decoratedID1 ; ]], m) = 
 	let 
-		val t1 = typeOf(decID1)
+		val t1 = typeOf(decoratedID1)
 	in
 		if t1 <> ERROR then m else raise model_error
 	end
@@ -262,9 +262,9 @@ typeOf([[ true ]], m) = BOOL
 typeOf([[ false ]], m) = BOOL
 typeOf([[ INT_LITERAL ]], m) = INT
 typeOf([[ ( expr1 ) ]], m) = typeOf(expr1, m)
-typeOf([[ decID1 ]], m) = typeOf(decID1, m)
+typeOf([[ decoratedID1 ]], m) = typeOf(decoratedID1, m)
 
-(* decID *)
+(* decoratedID *)
 
 typeOf([[ ++ IDENTIFIER ]], m) = 
     let 

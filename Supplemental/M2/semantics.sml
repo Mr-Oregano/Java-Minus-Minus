@@ -53,9 +53,9 @@ M([[ IDENTIFIER = expr1 ]], m) =
         m2
     end
 
-M([[ decID1 ; ]], m) = 
+M([[ decoratedID1 ; ]], m) = 
     let 
-        val (v, m1) = E'(decID1, m)
+        val (v, m1) = E'(decoratedID1, m)
     in
         m1
     end
@@ -278,9 +278,9 @@ E'([[ true ]], m) = (true, m)
 E'([[ false ]], m) = (false, m)
 E'([[ INT_LITERAL ]], m) = (INT_LITERAL, m)
 E'([[ ( expr1 ) ]], m) = E'(expr1)
-E'([[ decID1 ]], m) = E'(decID1, m)
+E'([[ decoratedID1 ]], m) = E'(decoratedID1, m)
 
-(* decID *)
+(* decoratedID *)
 
 E'([[ ++ IDENTIFIER ]], m) = 
     let 
