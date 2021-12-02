@@ -37,37 +37,40 @@ type store = (loc * denotable_value) list
    incremented. *)
 val initialModel = ( []:env, 0:loc, []:store )
 
-fun getLoc(t, l) = l
-fun getType(t, l) = t
+fun getLoc(tp, loc) = loc
+fun getType(tp, loc) = tp
 
-fun accessStore(_, (_, _, []])) = raise Fail("Error in Model.accessStore - this should never occur")
-  | accessStore(l1, (_, _, (l2, v)::s)) = 
-        if l1 = l2 then v 
-        else accessStore(l1, (_, _, s))
+fun accessStore(_, (_, _, [])) = raise Fail("ERROR: variable not initialized.")
+  | accessStore(loc, (env, c, (loc_n, v)::s)) = 
+        if loc = loc_n then v 
+        else accessStore(loc, (env, c, s))
 
-fun accessEnv(_, ([], _, _)) = raise Fail("Error in Model.accessEnv - this should never occur")
-  | accessEnv(id1, ((id2, type, loc)::env, _, _)) = 
-        if id1 = id2 then (type, loc) 
-        else accessEnv(id1, (env, _, _))
+fun accessEnv(id, ([], _, _)) = raise Fail("ERROR: '" ^ id ^ "' was not declared in this scope.")
+  | accessEnv(id, ((id_n, tp, loc)::env, c, s)) = 
+        if id = id_n then (tp, loc) 
+        else accessEnv(id, (env, c, s))
 
-fun updateStore(loc, new, (env, n, s)) = 
+fun updateStore(loc, v, (env, c, s)) = 
     let 
-        fun aux (l1, new, []) = [(l1, new)]
-          | aux (l1, new, (l2, old)::s) = 
-            if l1 = l2 then (l2, new)::s
-            else (l2, old)::aux(l1, new, s)
+        fun aux([]) = [(loc, v)]
+          | aux((loc_n, old)::s) = 
+            if loc = loc_n then (loc, v)::s
+            else (loc_n, old)::aux(s)
     in
-        (env, n, aux(loc, new, s))
+        (env, c, aux(s))
     end;
 
-fun updateEnv(id1, type, loc, (env, n, s)) = 
+(* Although a location was provided in the original updateEnv(), it does not
+   make sense to do so here since a new location can be computed from the counter
+   present in the program model. *)
+fun updateEnv(id, tp, (env, c, s)) = 
     let
-        fun aux (id1, type1, l1, []) = [(id1, type, loc)]
-          | aux (id1, type1, l1, (id2, type2, l2)::env) = 
-            if id1 = id2 then (id1, type1, l1)::env
-            else (id2, type2, l2)::aux(id1, type1, l1, env)
+        fun aux ([]) = [(id, tp, c)]
+          | aux ((id_n, tp_n, loc)::env) = 
+            if id = id_n then raise Fail("ERROR: '" ^ id_n ^ "' already declared in this scope.")
+            else (id_n, tp_n, loc)::aux(env)
     in
-        (aux(id1, type1, l1, env), n, s)
+        (aux(env), c + 1, s)
     end;
 
 (* =========================================================================================================== *)
