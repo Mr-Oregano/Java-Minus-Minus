@@ -63,7 +63,7 @@ M([[ decoratedID1 ; ]], m) =
 (* declaration *)
 
 M([[ bool IDENTIFIER ]], m) = updateEnv(IDENTIFIER, BOOL, new(), m)
-M([[ int IDENTIFIER]], m) = updateEnv(IDENTIFIER, INT, new(), m)
+M([[ int IDENTIFIER ]], m) = updateEnv(IDENTIFIER, INT, new(), m)
 
 (* block *)
 
