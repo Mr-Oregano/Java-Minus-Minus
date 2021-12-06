@@ -12,10 +12,10 @@ open CONCRETE_REPRESENTATION;
 (* The following tree structure, defined in the CONCERETE_REPRESENTATION structure, is used in the TL System:
 
     datatype NODE_INFO = info of { id : IntInf.int, line : int * int , column : int * int, label : string };
-	datatype INODE = inode of string * NODE_INFO
-	                 | ...  
-															
-	datatype ITREE = itree of INODE * ITREE list;
+    datatype INODE = inode of string * NODE_INFO
+                     | ...  
+                                                            
+    datatype ITREE = itree of INODE * ITREE list;
 *)
 
 
@@ -63,16 +63,22 @@ open CONCRETE_REPRESENTATION;
             (3) the second child is a semi-colon   
 *)
 
-fun M(  itree(inode("prog",_), 
-                [ 
-                    stmt_list
-                ] 
-             ), 
+fun M(itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
+  | M(itree(inode("statementList", _), 
+            [
+                stmt,
+                stmtList
+            ]), 
         m
-    ) = m
+      ) = 
+        let
+            val m1 = M(stmt, m)
+            val m2 = M(stmtList, m1)
+        in
+            m2
+        end;
         
   | M(  itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
-  
   | M _ = raise Fail("error in Semantics.M - this should never occur")
 
 (* =========================================================================================================== *)

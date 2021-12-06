@@ -6,13 +6,12 @@ module BasicView(precision = 0, verbosity=0)
 
 // ===========================================================================
 strategy main:   
-    // this code requires the start symbol of your grammar to be: prog
-    <prog>_in 
+    <statementList>_in 
     -> 
-    <prog>_in
+    <statementList>_in
     
     if { 
-            sml.interpreter_execute(<prog>_in) // Here is where the call to the sml interpreter function is made.
+            sml.interpreter_execute(<statementList>_in) // Here is where the call to the sml interpreter function is made.
        }
         
 // ===========================================================================
