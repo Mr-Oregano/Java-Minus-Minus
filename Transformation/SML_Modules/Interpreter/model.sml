@@ -90,12 +90,12 @@ fun envToString(name, tp, loc) =
       "(" ^ name ^ ", " ^ typeStr ^ ", " ^ locStr ^ ")"
     end;
 
-fun denotableValueToString(Integer v) = Int.toString(v)
-  | denotableValueToString(Boolean v) = if v then "true" else "false"
+fun dvToString(Integer v) = Int.toString(v)
+  | dvToString(Boolean v) = Bool.toString(v)
   
 fun storeToString(loc, v) = 
     let 
-      val typeStr = denotableValueToString(v);
+      val typeStr = dvToString(v);
       val locStr = Int.toString(loc);
     in
       "(" ^ locStr ^ ", " ^ typeStr ^ ")"
