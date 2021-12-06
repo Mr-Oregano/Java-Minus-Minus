@@ -37,6 +37,11 @@ type store = (loc * denotable_value) list
    incremented. *)
 val initialModel = ( []:env, 0:loc, []:store )
 
+(* NOTE: This is important! When accounting for scope we may want to keep 
+		 the old counter and environment after scope execution is complete.
+		 any values left in the store will be overwritten later. This will
+		 avoid the need for garbage collection. *)
+
 fun getLoc(tp, loc) = loc
 fun getType(tp, loc) = tp
 
@@ -50,6 +55,8 @@ fun accessEnv(id, ([], _, _)) = raise Fail("ERROR: '" ^ id ^ "' was not declared
         if id = id_n then (tp, loc) 
         else accessEnv(id, (env, c, s))
 
+(* NOTE: updateStore() will add a new entry for unused location
+		 otherwise update the value stored at the given location. *)
 fun updateStore(loc, v, (env, c, s)) = 
     let 
         fun aux([]) = [(loc, v)]
@@ -73,18 +80,35 @@ fun updateEnv(id, tp, (env, c, s)) =
         (aux(env), c + 1, s)
     end;
 
+(* Utility print and string conversion functions *)
+
+fun envToString(name, tp, loc) = 
+    let 
+      val typeStr = if tp = INT then "int" else "bool";
+      val locStr = Int.toString(loc);
+    in
+      "(" ^ name ^ ", " ^ typeStr ^ ", " ^ locStr ^ ")"
+    end;
+
+fun denotableValueToString(Integer v) = Int.toString(v)
+  | denotableValueToString(Boolean v) = if v then "true" else "false"
+  
+fun storeToString(loc, v) = 
+    let 
+      val typeStr = denotableValueToString(v);
+      val locStr = Int.toString(loc);
+    in
+      "(" ^ locStr ^ ", " ^ typeStr ^ ")"
+    end;
+
+fun showModel([], c, []) = ()
+  | showModel(e::envs, c, s::str) = 
+    (
+      print(envToString(e) ^ ", " ^ storeToString(s) ^ "\n");
+      showModel(envs, c, str)
+    );
+end;
+
 (* =========================================================================================================== *)
 end; (* struct *) 
 (* =========================================================================================================== *)
-
-
-
-
-
-
-
-
-
-
-
-
