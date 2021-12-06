@@ -107,7 +107,6 @@ fun showModel([], c, []) = ()
       print(envToString(e) ^ ", " ^ storeToString(s) ^ "\n");
       showModel(envs, c, str)
     );
-end;
 
 (* =========================================================================================================== *)
 end; (* struct *) 
