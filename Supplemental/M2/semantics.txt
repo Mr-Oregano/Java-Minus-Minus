@@ -53,7 +53,7 @@ M([[ IDENTIFIER = expr1 ]], m) =
         m2
     end
 
-M([[ decoratedID1 ; ]], m) = 
+M([[ decoratedID1 ]], m) = 
     let 
         val (v, m1) = E'(decoratedID1, m)
     in
@@ -238,16 +238,16 @@ E'([[ abs unaryExpr1 ]], m) =
 
 E'([[ not unaryExpr1 ]], m) = 
     let
-        val (v1, m1) = E'(unaryExpr1, m1)
+        val (v1, m1) = E'(unaryExpr1, m)
     in
         (not v1, m1) 
     end
 
 E'([[ ~ unaryExpr1 ]], m) = 
     let
-        val (v1, m1) = E'(unaryExpr1, m1)
+        val (v1, m1) = E'(unaryExpr1, m)
     in
-        (~v1, m2)
+        (~v1, m1)
     end
 
 E'([[ expExpr1 ]], m) = E'(expExpr1, m)
@@ -277,7 +277,7 @@ E'([[ IDENTIFIER ]], m) =
 E'([[ true ]], m) = (true, m)
 E'([[ false ]], m) = (false, m)
 E'([[ INT_LITERAL ]], m) = (INT_LITERAL, m)
-E'([[ ( expr1 ) ]], m) = E'(expr1)
+E'([[ ( expr1 ) ]], m) = E'(expr1, m)
 E'([[ decoratedID1 ]], m) = E'(decoratedID1, m)
 
 (* decoratedID *)

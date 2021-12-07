@@ -146,7 +146,7 @@ typeOf([[ relExpr1 ]], m) = typeOf(relExpr1, m)
 typeOf([[ relExpr1 < sumExpr1 ]], m) =
     let
         val t1 = typeOf(relExpr1, m)
-        val t2 = typeOf(sumExpr1, m1)
+        val t2 = typeOf(sumExpr1, m)
     in
         if t1 = t2 andalso t1 = INT then BOOL 
 		else ERROR
@@ -155,7 +155,7 @@ typeOf([[ relExpr1 < sumExpr1 ]], m) =
 typeOf([[ relExpr1 > sumExpr1 ]], m) =
     let
         val t1 = typeOf(relExpr1, m)
-        val t2 = typeOf(sumExpr1, m1)
+        val t2 = typeOf(sumExpr1, m)
     in
         if t1 = t2 andalso t1 = INT then BOOL 
 		else ERROR
@@ -168,7 +168,7 @@ typeOf([[ sumExpr1 ]], m) = typeOf(sumExpr1, m)
 typeOf([[ sumExpr1 + mulExpr1 ]], m) = 
     let
         val t1 = typeOf(sumExpr1, m)
-        val t2 = typeOf(mulExpr1, m1)
+        val t2 = typeOf(mulExpr1, m)
     in
         if t1 = t2 andalso t1 = INT then INT
         else ERROR
@@ -177,7 +177,7 @@ typeOf([[ sumExpr1 + mulExpr1 ]], m) =
 typeOf([[ sumExpr1 - mulExpr1 ]], m) = 
     let
         val t1 = typeOf(sumExpr1, m)
-        val t2 = typeOf(mulExpr1, m1)
+        val t2 = typeOf(mulExpr1, m)
     in
         if t1 = t2 andalso t1 = INT then INT
         else ERROR
@@ -190,7 +190,7 @@ typeOf([[ mulExpr1 ]], m) = typeOf(mulExpr1, m)
 typeOf([[ mulExpr1 * unaryExpr1 ]], m) = 
     let
         val t1 = typeOf(mulExpr1, m)
-        val t2 = typeOf(unaryExpr1, m1)
+        val t2 = typeOf(unaryExpr1, m)
     in
         if t1 = t2 andalso t1 = INT then INT
         else ERROR
@@ -199,7 +199,7 @@ typeOf([[ mulExpr1 * unaryExpr1 ]], m) =
 typeOf([[ mulExpr1 / unaryExpr1 ]], m) = 
     let
         val t1 = typeOf(mulExpr1, m)
-        val t2 = typeOf(unaryExpr1, m1)
+        val t2 = typeOf(unaryExpr1, m)
     in
         if t1 = t2 andalso t1 = INT then INT
         else ERROR
@@ -208,7 +208,7 @@ typeOf([[ mulExpr1 / unaryExpr1 ]], m) =
 typeOf([[ mulExpr1 % unaryExpr1 ]], m) = 
     let
         val t1 = typeOf(mulExpr1, m)
-        val t2 = typeOf(unaryExpr1, m1)
+        val t2 = typeOf(unaryExpr1, m)
     in
         if t1 = t2 andalso t1 = INT then INT 
         else ERROR
@@ -227,7 +227,7 @@ typeOf([[ abs unaryExpr1 ]], m) =
 
 typeOf([[ not unaryExpr1 ]], m) = 
     let
-        val t1 = typeOf(unaryExpr1, m1)
+        val t1 = typeOf(unaryExpr1, m)
     in
         if t1 = BOOL then BOOL else ERROR 
     end
