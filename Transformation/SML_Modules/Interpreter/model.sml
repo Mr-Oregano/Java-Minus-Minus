@@ -29,7 +29,6 @@ type loc   = int
 type env   = (string * types * loc) list
 type store = (loc * denotable_value) list
 
-
 (* The model defined here is a triple consisting of an environment, an address counter, and a store. The environment
    and the store are lists similar to what we have used in class. The address counter serves as an implementation of
    new(). Note that, depending on your implementation, this counter either contains the address of (1) the
@@ -44,6 +43,12 @@ val initialModel = ( []:env, 0:loc, []:store )
 
 fun getLoc(tp, loc) = loc
 fun getType(tp, loc) = tp
+
+fun getInt(Integer v) = v
+  | getInt _ = raise Fail("Invalid type.")
+
+fun getBool(Boolean v) = v
+  | getBool _ = raise Fail("Invalid type.")
 
 fun accessStore(_, (_, _, [])) = raise Fail("ERROR: variable not initialized.")
   | accessStore(loc, (env, c, (loc_n, v)::s)) = 
@@ -82,30 +87,56 @@ fun updateEnv(id, tp, (env, c, s)) =
 
 (* Utility print and string conversion functions *)
 
-fun envToString(name, tp, loc) = 
+fun envEntryToString(name, tp, loc) = 
     let 
       val typeStr = if tp = INT then "int" else "bool";
       val locStr = Int.toString(loc);
     in
-      "(" ^ name ^ ", " ^ typeStr ^ ", " ^ locStr ^ ")"
+      name ^ ":" ^ typeStr ^ " @ " ^ locStr
     end;
 
 fun dvToString(Integer v) = Int.toString(v)
   | dvToString(Boolean v) = Bool.toString(v)
   
-fun storeToString(loc, v) = 
+fun storeEntryToString(loc, v) = 
     let 
       val typeStr = dvToString(v);
       val locStr = Int.toString(loc);
     in
-      "(" ^ locStr ^ ", " ^ typeStr ^ ")"
+      "loc=" ^ locStr ^ ", val=" ^ typeStr ^ ")"
     end;
 
-fun showModel([], c, []) = ()
-  | showModel(e::envs, c, s::str) = 
+fun printModel([], c, []) = print("Counter: " ^ Int.toString(c) ^ "\n")
+  | printModel(env, c, []) = 
+		let 
+			fun aux([]) = ()
+			  | aux(x::xs) = 
+			  	( 
+					print(envEntryToString(x));
+					aux(xs)
+				)
+		in
+			print("\nUndeclared variables:\n");
+			aux(env)
+		end
+
+  | printModel([], c, s) = 
+		let 
+			fun aux([]) = ()
+			  | aux(x::xs) = 
+			  	( 
+					print(storeEntryToString(x));
+					aux(xs)
+				)
+		in
+			print("Garbage:\n");
+			aux(s)
+		end
+
+  | printModel(e::envs, c, s::str) = 
     (
-      print(envToString(e) ^ ", " ^ storeToString(s) ^ "\n");
-      showModel(envs, c, str)
+      print(envEntryToString(e) ^ " ----- " ^ storeEntryToString(s) ^ "\n");
+      printModel(envs, c, str)
     );
 
 (* =========================================================================================================== *)

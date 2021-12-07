@@ -13,7 +13,7 @@ open CONCRETE_REPRESENTATION;
 *)
 fun typeOf( itree(inode("expr", _), 
         [ 
-            expr1
+            expr1,
             itree(inode("or", _), [] ),
             andExpr1
         ] 
@@ -24,13 +24,13 @@ fun typeOf( itree(inode("expr", _),
         in
             if t1 = t2 andalso t1 = BOOL then BOOL 
             else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("expr", _), [ andExpr1 ]), m) = typeOf(andExpr1, m)
 
 (* andExpr *)
 
-  | typeOf( itree(inode("andExpr"),
+  | typeOf( itree(inode("andExpr", _),
         [
             andExpr1,
             itree(inode("and", _), []),
@@ -43,9 +43,9 @@ fun typeOf( itree(inode("expr", _),
         in
             if t1 = t2 andalso t1 = BOOL then BOOL 
             else ERROR
-        end;
+        end
 
-  | typeOf( itree(inode("andExpr"), [ equalExpr1 ]), m) = typeOf(equalExpr1, m)
+  | typeOf( itree(inode("andExpr", _), [ equalExpr1 ]), m) = typeOf(equalExpr1, m)
 
 (* equalExpr *)
 
@@ -61,7 +61,7 @@ fun typeOf( itree(inode("expr", _),
             val t2 = typeOf(relExpr1, m)
         in
             if t1 = t2 andalso t1 <> ERROR then BOOL else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("equalExpr", _), 
         [ 
@@ -72,10 +72,10 @@ fun typeOf( itree(inode("expr", _),
     ), m) =
         let
             val t1 = typeOf(equalExpr1, m)
-            val t2 = typeOf(relExpr1, m1)
+            val t2 = typeOf(relExpr1, m)
         in
             if t1 = t2 andalso t1 <> ERROR then BOOL else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("equalExpr", _), [ relExpr1 ]), m) = typeOf(relExpr1, m)
     
@@ -90,28 +90,28 @@ fun typeOf( itree(inode("expr", _),
     ), m) =
         let
             val t1 = typeOf(relExpr1, m)
-            val t2 = typeOf(sumExpr1, m1)
+            val t2 = typeOf(sumExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then BOOL 
             else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("relExpr", _), 
         [
             relExpr1,
             itree(inode(">", _), [] ),
-            relExpr1
+            sumExpr1
         ]
     ), m) =
         let
             val t1 = typeOf(relExpr1, m)
-            val t2 = typeOf(sumExpr1, m1)
+            val t2 = typeOf(sumExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then BOOL 
             else ERROR
-        end;
+        end
 
-  | typeOf( itree(inode("sumExpr", _), [ sumExpr1 ]), m) = typeOf(sumExpr1, m)
+  | typeOf( itree(inode("relExpr", _), [ sumExpr1 ]), m) = typeOf(sumExpr1, m)
 
 (* sumExpr *)
 
@@ -124,11 +124,11 @@ fun typeOf( itree(inode("expr", _),
     ), m) = 
         let
             val t1 = typeOf(sumExpr1, m)
-            val t2 = typeOf(mulExpr1, m1)
+            val t2 = typeOf(mulExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then INT
             else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("sumExpr", _), 
         [ 
@@ -139,11 +139,11 @@ fun typeOf( itree(inode("expr", _),
     ), m) =
         let
             val t1 = typeOf(sumExpr1, m)
-            val t2 = typeOf(mulExpr1, m1)
+            val t2 = typeOf(mulExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then INT
             else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("sumExpr", _), [ mulExpr1 ]), m) = typeOf(mulExpr1, m)
 
@@ -158,11 +158,11 @@ fun typeOf( itree(inode("expr", _),
     ), m) =
         let
             val t1 = typeOf(mulExpr1, m)
-            val t2 = typeOf(unaryExpr1, m1)
+            val t2 = typeOf(unaryExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then INT
             else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("mulExpr", _), 
         [ 
@@ -173,11 +173,11 @@ fun typeOf( itree(inode("expr", _),
     ), m) =
         let
             val t1 = typeOf(mulExpr1, m)
-            val t2 = typeOf(unaryExpr1, m1)
+            val t2 = typeOf(unaryExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then INT
             else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("mulExpr", _), 
         [ 
@@ -188,11 +188,11 @@ fun typeOf( itree(inode("expr", _),
     ), m) = 
         let
             val t1 = typeOf(mulExpr1, m)
-            val t2 = typeOf(unaryExpr1, m1)
+            val t2 = typeOf(unaryExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then INT 
             else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("mulExpr", _), [ unaryExpr1 ]), m) = typeOf(unaryExpr1, m) 
 
@@ -200,7 +200,7 @@ fun typeOf( itree(inode("expr", _),
 
   | typeOf( itree(inode("unaryExpr", _),
         [
-            itree(inode("ads", _), [] ),
+            itree(inode("abs", _), [] ),
             unaryExpr1
         ]
     ), m) = 
@@ -208,7 +208,7 @@ fun typeOf( itree(inode("expr", _),
             val t1 = typeOf(unaryExpr1, m)
         in
             if t1 = INT then INT else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("unaryExpr", _),
         [
@@ -217,10 +217,10 @@ fun typeOf( itree(inode("expr", _),
         ]
     ), m) = 
         let
-            val t1 = typeOf(unaryExpr1, m1)
+            val t1 = typeOf(unaryExpr1, m)
         in
             if t1 = BOOL then BOOL else ERROR 
-        end;
+        end
 
   | typeOf( itree(inode("unaryExpr", _),
         [
@@ -232,7 +232,7 @@ fun typeOf( itree(inode("expr", _),
             val t1 = typeOf(unaryExpr1, m)
         in
             if t1 = INT then INT else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("unaryExpr", _), [ expExpr1 ]), m) = typeOf(expExpr1, m)
 
@@ -251,37 +251,15 @@ fun typeOf( itree(inode("expr", _),
         in
             if t1 = t2 andalso t1 = INT then INT
             else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("expExpr", _), [ factor1 ]), m) = typeOf(factor1, m)
 
 (* factor *)
 
-  | typeOf( itree(inode("factor", _), [ id1 ]), m) = 
-        let 
-            val idName  = getLeaf(id1)
-        in
-            getType(accessEnv(idName, m))
-        end;
-
-  | typeOf( itree(inode("factor", _), 
-        [ 
-            itree(inode("true", _), [] ),
-        ] 
-    ), m) = BOOL
-
-  | typeOf( itree(inode("factor", _), 
-        [ 
-            itree(inode("false", _), [] ),
-        ] 
-    ),  m) = BOOL
-    
-  | typeOf( itree(inode("factor", _), 
-        [ 
-            itree(inode("INT_LITERAL", _), [ intLiteral ])
-        ] 
-    ), m) = INT
-        
+  | typeOf( itree(inode("factor", _), [ itree(inode("true", _), [] ) ]), m) = BOOL
+  | typeOf( itree(inode("factor", _), [ itree(inode("false", _), [] ) ]),  m) = BOOL        
+  | typeOf( itree(inode("factor", _), [ child ]), m) = typeOf(child, m)
   | typeOf( itree(inode("factor", _), 
         [ 
             itree(inode("(", _), [] ),
@@ -290,7 +268,14 @@ fun typeOf( itree(inode("expr", _),
         ] 
     ), m) = typeOf(expr1, m)
     
-  | typeOf( itree(inode("factor", _), [ decoratedID1 ]), m) = typeOf(decoratedID1, m)
+  | typeOf( ID as itree(inode("IDENTIFIER", _), [ _ ] ), m) = 
+        let 
+            val idName  = getLeaf(ID)
+        in
+            getType(accessEnv(idName, m))
+        end
+
+  | typeOf( itree(inode("INT_LITERAL", _), [ _ ] ), m) = INT
 
 (* decoratedID *)
 
@@ -305,7 +290,7 @@ fun typeOf( itree(inode("expr", _),
             val t1 = getType(accessEnv(idName, m))
         in
             if t1 = INT then INT else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("decoratedID", _), 
         [ 
@@ -318,7 +303,7 @@ fun typeOf( itree(inode("expr", _),
             val t1 = getType(accessEnv(idName, m))
         in
             if t1 = INT then INT else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("decoratedID", _), 
         [ 
@@ -331,7 +316,7 @@ fun typeOf( itree(inode("expr", _),
             val t1 = getType(accessEnv(idName, m))
         in
             if t1 = INT then INT else ERROR
-        end;
+        end
 
   | typeOf( itree(inode("decoratedID", _), 
         [ 
@@ -344,7 +329,10 @@ fun typeOf( itree(inode("expr", _),
             val t1 = getType(accessEnv(idName, m))
         in
             if t1 = INT then INT else ERROR
-        end;
+        end
+
+  | typeOf( itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn typeOf root = " ^ x_root ^ "\n\n")
+  | typeOf _ = raise Fail("Error in TypeChecker.typeOf - this should never occur")
 
 (* Type Checker *)
 
@@ -356,22 +344,22 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
         ]
     ), m) = 
           let
-            val m1 = typeCheck(statement1, m)
-            val m2 = typeCheck(statementList1, m1)
+            val m1 = typeCheck(stmt, m)
+            val m2 = typeCheck(stmtList, m1)
         in
             m2
-        end;
+        end
     
 (* Statement *)
 
   | typeCheck( itree(inode("statement", _), [ itree(inode(";", _), [] ) ]), m) = m
   | typeCheck( itree(inode("statement", _), [ child ]), m) = typeCheck(child, m)
-  |	typeCheck( itree(inode("statement", _),
+  | typeCheck( itree(inode("statement", _),
         [
             child,
             itree(inode(";", _), [] )
         ]
-    ), m) = typeCheck(assignment1, m)
+    ), m) = typeCheck(child, m)
 
   | typeCheck( itree(inode("statement", _),
         [
@@ -386,8 +374,8 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val t1 = typeOf(expr1, m)
             val m1 = typeCheck(block1, m)
         in
-            if t1 = BOOL then m1 else raise model_error
-        end;
+            if t1 = BOOL then m1 else raise Fail("Type Error")
+        end
 
   | typeCheck( itree(inode("statement", _),
         [
@@ -405,8 +393,8 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m1 = typeCheck(block1, m)
             val m2 = typeCheck(block2, m1)
         in
-            if t1 = BOOL then m2 else raise model_error
-        end;
+            if t1 = BOOL then m2 else raise Fail("Type Error")
+        end
     
   | typeCheck( itree(inode("statement", _),
         [
@@ -420,8 +408,8 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
         let 
             val t1 = typeOf(expr1, m)
         in
-            if t1 <> ERROR then m else raise model_error
-        end;
+            if t1 <> ERROR then m else raise Fail("Type Error")
+        end
 
 (* assignment *)
 
@@ -437,53 +425,48 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
           val idName  = getLeaf(id1)
           val t2 = getType(accessEnv(idName, m))
         in
-          if t1 = t2 then m else raise model_error
-        end;
+          if t1 = t2 then m else raise Fail("Type Error")
+        end
         
-  | typeCheck( itree(inode("assignment", _),
-        [
-            itree(inode("decoratedID1", _), [] ),
-            itree(inode(";", _), [] )
-        ]
-    ), m) = 
+  | typeCheck( itree(inode("assignment", _), [ decoratedID1 ]), m) = 
         let 
-            val t1 = typeOf(decoratedID1)
+            val t1 = typeOf(decoratedID1, m)
         in
-            if t1 = INT then m else raise model_error
-        end;
+            if t1 = INT then m else raise Fail("Type Error")
+        end
 
 (* declaration *)
 
-  | typeCheck( itree(inode("declaration", _),
+  | typeCheck( itree(inode("decl", _),
         [
             itree(inode("bool", _), [] ),
-            expr1
+            id1
         ]
     ), m) = 
         let
           val idName  = getLeaf(id1)
         in 
           updateEnv(idName, BOOL, m)
-        end;
+        end
 
-  | typeCheck( itree(inode("declaration", _),
+  | typeCheck( itree(inode("decl", _),
         [
             itree(inode("int", _), [] ),
-            expr1
+            id1
         ]
     ), m) = 
         let
           val idName  = getLeaf(id1)
         in 
           updateEnv(idName, INT, m)
-        end;
+        end
 
 (* block *)
 
   | typeCheck( itree(inode("block", _),
         [
             itree(inode("{", _), [] ),
-            itree(inode("statementList1", _), [] ),
+            statementList1,
             itree(inode("}", _), [] )
         ]
     ), m) = 
@@ -491,7 +474,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m1 = typeCheck(statementList1, m)
         in 
             m
-        end;
+        end
 
 (* whileLoop *)
 
@@ -508,19 +491,20 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
           val t1 = typeOf(expr1, m)    
           val m1 = typeCheck(block1, m)
         in
-          if t1 = BOOL then m1 else raise model_error
-        end;
+          if t1 = BOOL then m1 else raise Fail("Type Error")
+        end
 
 (* forLoop *)
 
   | typeCheck( itree(inode("forLoop", _),
         [
+            itree(inode("for", _), [] ),
             itree(inode("(", _), [] ),
-            itree(inode("assignment1", _), [] ),
+            assignment1,
             itree(inode(";", _), [] ),
             expr1,
             itree(inode(";", _), [] ),
-            itree(inode("assignment2", _), [] ),
+            assignment2,
             itree(inode(")", _), [] ),
             block1
         ]
@@ -531,11 +515,11 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m2 = typeCheck(assignment2, m1)    
             val m3 = typeCheck(block1, m2)
         in
-            if t1 = BOOL then m3 else raise model_error
-        end;
+            if t1 = BOOL then m3 else raise Fail("Type Error")
+        end
 
   | typeCheck( itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn typeCheck root = " ^ x_root ^ "\n\n")
-  | typeCheck _ = raise Fail("Error in Model.typeCheck - this should never occur")
+  | typeCheck _ = raise Fail("Error in TypeChecker.typeCheck - this should never occur")
 
 
 (* =========================================================================================================== *)  

@@ -63,26 +63,31 @@ open CONCRETE_REPRESENTATION;
             (3) the second child is a semi-colon   
 *)
 
+(* NOTE: utility power function*)
+fun pow(x, 0) = 1
+  | pow(x, y) = x * pow(x, y - 1)
+
 (* expr: *)
 fun E( itree(inode("expr", _), 
         [ 
-            expr1
+            expr1,
             itree(inode("or", _), [] ),
             andExpr1
         ]
     ), m) =
         let 
             val (v1, m1) = E(expr1, m)
+            val b1 = getBool(v1)
         in
-            if v1 then (v1, m1)
+            if b1 then (v1, m1)
             else E(andExpr1, m1)
-        end;
+        end
         
   | E( itree(inode("expr", _), [ andExpr1 ]), m) = E(andExpr1, m)
 
 (* andExpr *)
 
-  | E( itree(inode("andExpr"),
+  | E( itree(inode("andExpr", _),
         [
             andExpr1,
             itree(inode("and", _), []),
@@ -91,12 +96,13 @@ fun E( itree(inode("expr", _),
     ), m) =
         let
             val (v1, m1) = E(andExpr1, m)
+            val b1 = getBool(v1)
         in
-            if not v1 then (v1, m1) 
+            if not b1 then (v1, m1) 
             else E(equalExpr1, m1)
-        end;
+        end
 
-  | E( itree(inode("andExpr"), [ equalExpr1 ]), m) = E(equalExpr1, m)
+  | E( itree(inode("andExpr", _), [ equalExpr1 ]), m) = E(equalExpr1, m)
 
 (* equalExpr *)
 
@@ -111,8 +117,8 @@ fun E( itree(inode("expr", _),
             val (v1, m1) = E(equalExpr1, m)
             val (v2, m2) = E(relExpr1, m1)
         in
-            (v1 = v2, m2)
-        end;
+            (Boolean (v1 = v2), m2)
+        end
 
   | E( itree(inode("equalExpr", _), 
         [ 
@@ -125,8 +131,8 @@ fun E( itree(inode("expr", _),
             val (v1, m1) = E(equalExpr1, m)
             val (v2, m2) = E(relExpr1, m1)
         in
-           (v1 <> v2, m2)
-        end;
+           (Boolean (v1 <> v2), m2)
+        end
 
   | E( itree(inode("equalExpr", _), [ relExpr1 ]), m) = E(relExpr1, m)
         
@@ -142,25 +148,29 @@ fun E( itree(inode("expr", _),
         let
             val (v1, m1) = E(relExpr1, m)
             val (v2, m2) = E(sumExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
         in
-            (v1 < v2, m2)
-        end;
+            (Boolean (i1 < i2), m2)
+        end
         
   | E( itree(inode("relExpr", _), 
         [
             relExpr1,
             itree(inode(">", _), [] ),
-            relExpr1
+            sumExpr1
         ]
     ), m) =
         let
             val (v1, m1) = E(relExpr1, m)
             val (v2, m2) = E(sumExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
         in
-            (v1 > v2, m2)
-        end;
+            (Boolean (i1 > i2), m2)
+        end
 
-  | E( itree(inode("sumExpr", _), [ sumExpr1 ]), m) = E(sumExpr1, m)
+  | E( itree(inode("relExpr", _), [ sumExpr1 ]), m) = E(sumExpr1, m)
 
 (* sumExpr *)
 
@@ -174,9 +184,11 @@ fun E( itree(inode("expr", _),
         let
             val (v1, m1) = E(sumExpr1, m)
             val (v2, m2) = E(mulExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
         in
-            (v1 + v2, m2)
-        end;
+            (Integer (i1 + i2), m2)
+        end
         
   | E( itree(inode("sumExpr", _), 
         [ 
@@ -188,9 +200,11 @@ fun E( itree(inode("expr", _),
         let
             val (v1, m1) = E(sumExpr1, m)
             val (v2, m2) = E(mulExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
         in
-            (v1 - v2, m2)
-        end;
+            (Integer (i1 - i2), m2)
+        end
 
   | E( itree(inode("sumExpr", _), [ mulExpr1 ]), m) = E(mulExpr1, m)
 
@@ -206,9 +220,11 @@ fun E( itree(inode("expr", _),
         let
             val (v1, m1) = E(mulExpr1, m)
             val (v2, m2) = E(unaryExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
         in
-            (v1 * v2, m2)
-        end;
+            (Integer (i1 * i2), m2)
+        end
 
   | E( itree(inode("mulExpr", _), 
         [ 
@@ -220,9 +236,11 @@ fun E( itree(inode("expr", _),
         let
             val (v1, m1) = E(mulExpr1, m)
             val (v2, m2) = E(unaryExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
         in
-            (v1 div v2, m2)
-        end;
+            (Integer (i1 div i2), m2)
+        end
 
   | E( itree(inode("mulExpr", _), 
         [ 
@@ -234,9 +252,11 @@ fun E( itree(inode("expr", _),
         let
             val (v1, m1) = E(mulExpr1, m)
             val (v2, m2) = E(unaryExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
         in
-            (v1 mod v2, m2)
-        end;
+            (Integer (i1 mod i2), m2)
+        end
 
   | E( itree(inode("mulExpr", _), [ unaryExpr1 ]), m) = E(unaryExpr1, m)
         
@@ -250,9 +270,10 @@ fun E( itree(inode("expr", _),
     ), m) =
         let
             val (v1, m1) = E(unaryExpr1, m)
+            val i1 = getInt(v1)
         in
-            (abs(v1), m1) (* Assume abs is a function *)
-        end;
+            (Integer (abs i1), m1)
+        end
 
   | E( itree(inode("unaryExpr", _), 
         [ 
@@ -261,10 +282,11 @@ fun E( itree(inode("expr", _),
         ]
     ), m) =
         let
-            val (v1, m1) = E(unaryExpr1, m1)
+            val (v1, m1) = E(unaryExpr1, m)
+            val b1 = getBool(v1)
         in
-            (not v1, m1) 
-        end;
+            (Boolean (not b1), m1) 
+        end
 
   | E( itree(inode("unaryExpr", _), 
         [ 
@@ -273,10 +295,11 @@ fun E( itree(inode("expr", _),
         ]
     ), m) =
         let
-            val (v1, m1) = E(unaryExpr1, m1)
+            val (v1, m1) = E(unaryExpr1, m)
+            val i1 = getInt(v1)
         in
-            (~v1, m2)
-        end;
+            (Integer (~i1), m1)
+        end
 
   | E( itree(inode("unaryExpr", _), [ expExpr1 ]), m) = E(expExpr1, m)
 
@@ -292,47 +315,43 @@ fun E( itree(inode("expr", _),
         let
             val (v1, m1) = E(factor1, m)
             val (v2, m2) = E(expExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
         in
-            (exp(v1, v2), m2) (* Assume exp is a function *)
-        end;
+            (Integer (pow(i1, i2)), m2)
+        end
 
   | E( itree(inode("expExpr", _), [ factor1 ]), m) = E(factor1, m)
 
 (* factor *)
 
-  | E( itree(inode("factor", _), [ id1 ]), m) = 
-        let 
-            val idName  = getLeaf(id1)
-            val loc = getLoc(accessEnv(idName, m))
-            val v = accessStore(loc, m)
-        in
-            (v, m)
-        end;
-
-  | E( itree(inode("factor", _), 
-        [ 
-            itree(inode("true", _), [] ), 
-        ]
-    ), m) = (Boolean true, m)
-  | E( itree(inode("factor", _), 
-        [ 
-            itree(inode("false", _), [] ), 
-        ]
-    ), m) = (Boolean false, m)
-  | E( itree(inode("factor", _), 
-        [ 
-            itree(inode("INT_LITERAL", _), [ intLiteral ]) 
-        ]
-    ), m) = (Integer Int.fromString(intLiteral), m)
+  | E( itree(inode("factor", _), [ itree(inode("true", _), [] ) ]), m) = (Boolean true, m)
+  | E( itree(inode("factor", _), [ itree(inode("false", _), [] ) ]), m) = (Boolean false, m)
+  | E( itree(inode("factor", _), [ child ]), m) = E(child, m)
   | E( itree(inode("factor", _), 
         [ 
             itree(inode("(", _), [] ),
             expr1,
             itree(inode(")", _), [] )
         ]
-    ), m) = E(expr1)
+    ), m) = E(expr1, m)
 
-  | E( itree(inode("factor", _), [ decoratedID1 ]), m) =  E(decoratedID1, m)
+  | E( ID as itree(inode("IDENTIFIER", _), [ _ ] ), m) = 
+        let
+            val idName  = getLeaf(ID)
+            val loc = getLoc(accessEnv(idName, m))
+            val v = accessStore(loc, m)
+        in
+            (v, m)
+        end
+
+  | E( INT_LITERAL as itree(inode("INT_LITERAL", _), [ _ ] ), m) = 
+        let
+            val literal = getLeaf(INT_LITERAL)
+            val v = valOf(Int.fromString literal)
+        in
+            (Integer v, m)
+        end
 
 (* decoratedID *)
 
@@ -346,11 +365,11 @@ fun E( itree(inode("expr", _),
             val idName  = getLeaf(id1)
             val loc = getLoc(accessEnv(idName, m))
             val v = accessStore(loc, m)
-            val v2 = v + 1
+            val v2 = Integer (getInt(v) + 1)
             val m1 = updateStore(loc, v2, m)
         in
             (v2, m1)
-        end;
+        end
 
   | E( itree(inode("decoratedID", _), 
         [ 
@@ -362,11 +381,11 @@ fun E( itree(inode("expr", _),
             val idName  = getLeaf(id1)
             val loc = getLoc(accessEnv(idName, m))
             val v = accessStore(loc, m)
-            val v2 = v - 1
+            val v2 = Integer (getInt(v) - 1)
             val m1 = updateStore(loc, v2, m)
         in
             (v2, m1)
-        end;
+        end
 
   | E( itree(inode("decoratedID", _), 
         [ 
@@ -378,11 +397,11 @@ fun E( itree(inode("expr", _),
             val idName  = getLeaf(id1)
             val loc = getLoc(accessEnv(idName, m))
             val v = accessStore(loc, m)
-            val v2 = v + 1
+            val v2 = Integer (getInt(v) + 1)
             val m1 = updateStore(loc, v2, m)
         in
             (v, m1)
-        end;
+        end
 
   | E( itree(inode("decoratedID", _), 
         [ 
@@ -394,11 +413,14 @@ fun E( itree(inode("expr", _),
             val idName  = getLeaf(id1)
             val loc = getLoc(accessEnv(idName, m))
             val v = accessStore(loc, m)
-            val v2 = v - 1
+            val v2 = Integer (getInt(v) - 1)
             val m1 = updateStore(loc, v2, m)
         in
             (v, m1)
-        end;
+        end
+
+  | E( itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn E root = " ^ x_root ^ "\n\n")
+  | E _ = raise Fail("Error in Semantics.E - this should never occur")
 
 (* Semantics *)
 
@@ -414,7 +436,7 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             val m2 = M(stmtList, m1)
         in
             m2
-        end;
+        end
 
   (* Statement *)
 
@@ -439,10 +461,11 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
     ), m) = 
         let
             val (v, m1) = E(expr1, m)
+            val b = getBool(v)
         in
-            if v then M(block1, m1)
+            if b then M(block1, m1)
             else m1
-        end;
+        end
 
   | M( itree(inode("statement", _),
         [
@@ -457,33 +480,34 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
     ), m) = 
         let
             val (v, m1) = E(expr1, m)
+            val b = getBool(v)
         in
-            if v then M(block1, m1)
+            if b then M(block1, m1)
             else M(block2, m1)
-        end;
+        end
         
   | M( itree(inode("statement", _),
         [
             itree(inode("print", _), [] ),
             itree(inode("(", _), [] ),
-            expr1
+            expr1,
             itree(inode(")", _), [] ),
             itree(inode(";", _), [] )
         ]
     ), m) = 
         let 
             val (v, m1) = E(expr1, m)
-            print(dvToString v)
         in
+            print(dvToString(v) ^ "\n");
             m1
-        end;
+        end
 
 (* assignment *)
 
   | M( itree(inode("assignment", _),
         [
             id1,
-            itree(inode("=", _), [] )
+            itree(inode("=", _), [] ),
             expr1
         ]
     ), m) = 
@@ -494,14 +518,14 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             val m2 = updateStore(loc, v, m1)
         in
             m2
-        end;
+        end
 
   | M( itree(inode("assignment", _), [ decoratedID1 ]), m) = 
         let 
             val (v, m1) = E(decoratedID1, m)
         in
             m1
-        end;
+        end
 
 (* declaration *)
 
@@ -515,7 +539,7 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             val idName  = getLeaf(id1)
         in
             updateEnv(idName, BOOL, m)
-        end;
+        end
 
   | M( itree(inode("decl", _),
         [
@@ -527,7 +551,7 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             val idName  = getLeaf(id1)
         in
             updateEnv(idName, INT, m)
-        end;
+        end
 
 (* block *)
 
@@ -542,7 +566,7 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             val (env1, c1, str1) = M(statementList1, (env, c, s))
         in
             (env, c, str1)
-        end;      
+        end      
 
 (* whileLoop *)
 
@@ -559,8 +583,9 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             fun N(expr1, block1, m) = 
                 let
                     val (v, m1) = E(expr1, m)
+                    val b = getBool(v)
                 in
-                    if v then 
+                    if b then 
                         let              
                             val m2 = M(block1, m1)    
                             val m3 = N(expr1, block1, m2)    
@@ -568,10 +593,10 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
                             m3
                         end
                     else m1
-                end;
+                end
         in
             N(expr1, block1, m)
-        end;
+        end
 
 (* forLoop *)
 
@@ -581,7 +606,7 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             itree(inode("(", _), [] ),
             assignment1,
             itree(inode(";", _), [] ),
-            expr1
+            expr1,
             itree(inode(";", _), [] ),
             assignment2,
             itree(inode(")", _), [] ),
@@ -593,20 +618,21 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             fun N(cond, iter, block, m) = 
                 let
                     val (v, m1) = E(cond, m)
+                    val b = getBool(v)
                 in
-                    if v then 
+                    if b then 
                         let              
                             val m2 = M(block, m1)    
                             val m3 = M(iter, m2)
                             val m4 = N(cond, iter, block, m3)
                         in
                             m4
-                        end;   
+                        end   
                     else m1
-                end;
+                end
         in
             N(expr1, assignment2, block1, m1)
-        end;
+        end
         
   | M( itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   | M _ = raise Fail("error in Semantics.M - this should never occur")
