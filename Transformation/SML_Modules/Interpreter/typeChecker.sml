@@ -343,7 +343,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             stmtList
         ]
     ), m) = 
-          let
+        let
             val m1 = typeCheck(stmt, m)
             val m2 = typeCheck(stmtList, m1)
         in
