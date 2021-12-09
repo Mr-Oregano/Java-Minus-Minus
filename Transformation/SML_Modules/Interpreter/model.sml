@@ -103,42 +103,31 @@ fun storeEntryToString(loc, v) =
       val typeStr = dvToString(v);
       val locStr = Int.toString(loc);
     in
-      "loc=" ^ locStr ^ ", val=" ^ typeStr ^ ")"
+      "loc=" ^ locStr ^ ", val=" ^ typeStr
     end;
 
-fun printModel([], c, []) = print("Counter: " ^ Int.toString(c) ^ "\n")
-  | printModel(env, c, []) = 
-		let 
-			fun aux([]) = ()
-			  | aux(x::xs) = 
-			  	( 
-					print(envEntryToString(x));
-					aux(xs)
-				)
-		in
-			print("\nUndeclared variables:\n");
-			aux(env)
-		end
+fun printStore([]) = ()
+  | printStore(s::str) = 
+	( 
+		print(storeEntryToString(s) ^ "\n");
+		printStore(str)
+	)
 
-  | printModel([], c, s) = 
-		let 
-			fun aux([]) = ()
-			  | aux(x::xs) = 
-			  	( 
-					print(storeEntryToString(x));
-					aux(xs)
-				)
-		in
-			print("Garbage:\n");
-			aux(s)
-		end
+fun printEnv([]) = ()
+  | printEnv(e::env) = 
+	( 
+		print(envEntryToString(e) ^ "\n");
+		printEnv(env)
+	)
 
-  | printModel(e::envs, c, s::str) = 
-    (
-      print(envEntryToString(e) ^ " ----- " ^ storeEntryToString(s) ^ "\n");
-      printModel(envs, c, str)
-    );
-
+fun printModel(env, c, s) = 
+	(
+		print("MODEL          \n---------------------------------------\n\nCounter: " ^ Int.toString(c));
+		print("\n\nEnvironment\n---------------------------------------\n\n");
+		printEnv(env);
+		print("\nStore        \n---------------------------------------\n\n");
+		printStore(s)
+	)
 (* =========================================================================================================== *)
 end; (* struct *) 
 (* =========================================================================================================== *)
