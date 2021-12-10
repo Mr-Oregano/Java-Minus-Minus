@@ -580,15 +580,15 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         ]
     ), m) = 
         let
-            fun N(expr1, block1, m) = 
+            fun N(cond, block, m) = 
                 let
-                    val (v, m1) = E(expr1, m)
+                    val (v, m1) = E(cond, m)
                     val b = getBool(v)
                 in
                     if b then 
                         let              
-                            val m2 = M(block1, m1)    
-                            val m3 = N(expr1, block1, m2)    
+                            val m2 = M(block, m1)    
+                            val m3 = N(cond, block, m2)    
                         in
                             m3
                         end
