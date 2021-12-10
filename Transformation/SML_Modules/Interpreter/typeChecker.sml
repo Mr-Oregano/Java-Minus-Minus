@@ -374,7 +374,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val t1 = typeOf(expr1, m)
             val m1 = typeCheck(block1, m)
         in
-            if t1 = BOOL then m1 else raise Fail("Type Error")
+            if t1 = BOOL then m1 else raise Fail("Type mistmatch")
         end
 
   | typeCheck( itree(inode("statement", _),
@@ -393,7 +393,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m1 = typeCheck(block1, m)
             val m2 = typeCheck(block2, m1)
         in
-            if t1 = BOOL then m2 else raise Fail("Type Error")
+            if t1 = BOOL then m2 else raise Fail("Type mistmatch")
         end
     
   | typeCheck( itree(inode("statement", _),
@@ -408,7 +408,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
         let 
             val t1 = typeOf(expr1, m)
         in
-            if t1 <> ERROR then m else raise Fail("Type Error")
+            if t1 <> ERROR then m else raise Fail("Type mistmatch")
         end
 
 (* assignment *)
@@ -425,14 +425,14 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
           val idName  = getLeaf(id1)
           val t2 = getType(accessEnv(idName, m))
         in
-          if t1 = t2 then m else raise Fail("Type Error")
+          if t1 = t2 then m else raise Fail("Type mistmatch")
         end
         
   | typeCheck( itree(inode("assignment", _), [ decoratedID1 ]), m) = 
         let 
             val t1 = typeOf(decoratedID1, m)
         in
-            if t1 = INT then m else raise Fail("Type Error")
+            if t1 = INT then m else raise Fail("Type mistmatch")
         end
 
 (* declaration *)
@@ -491,7 +491,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
           val t1 = typeOf(expr1, m)    
           val m1 = typeCheck(block1, m)
         in
-          if t1 = BOOL then m1 else raise Fail("Type Error")
+          if t1 = BOOL then m1 else raise Fail("Type mistmatch")
         end
 
 (* forLoop *)
@@ -515,7 +515,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m2 = typeCheck(assignment2, m1)    
             val m3 = typeCheck(block1, m2)
         in
-            if t1 = BOOL then m3 else raise Fail("Type Error")
+            if t1 = BOOL then m3 else raise Fail("Type mistmatch")
         end
 
   | typeCheck( itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn typeCheck root = " ^ x_root ^ "\n\n")

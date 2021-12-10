@@ -1,11 +1,3 @@
-bool isCool;
-int x;
-int y;
-
-x = 9;
-y = ~3;
-isCool = false;
-
 // This is a single line comment
 
 /* 
@@ -18,6 +10,29 @@ isCool = false;
 
 /* This is a /* nested */
  * multiline comment */
+
+bool isCool;
+int x;
+int y;
+
+x = 9;
+y = ~3;
+isCool = false;
+
+// ================ ERROR EXAMPLES ===================
+// Variables must be assigned before use.
+int h;
+
+// print(h); // ERR: variable not initialized
+
+// Variables must be declared before use
+// print(undeclared); // ERR: variable not declared
+
+// Variables cannot be redeclared
+// int h; // ERR: variable redeclaration
+
+// Correct type must be used
+// h = true; // ERR: type mismatch
 
 // If and Loop statements require blocks
 //
