@@ -11,6 +11,6 @@ Also, requires MLTon SML compiler: http://mlton.org/.
   - Run `.scripts/build.sh <bnf> <start_symbol>` to build parser and lexer where `<bnf>` is your grammar and `<start_symbol>` is the start symbol for that grammar. 
  Create an env variable called `DOMAIN` and set it to the root of this project (folder containing `.git`). You should also set `MLTON_BIN` and `TL_SYSTEM` to the MLTon/bin and TLSystem path respectively.
 
-  - Run `.scripts/tlp.sh <tlp_file>` to build TLP, where `<tlp_file>` is the name of your TLP file (without extension).
+  - Run `.scripts/tlp.sh <tlp>` to build TLP, where `<tlp>` is the name of the TLP file (without extension).
 
-  - Run `.scripts/transform.sh <target>` to interpret a program, where `<target>` is the name of your target program.
+  - Run `.scripts/transform.sh <tlp> <target>` to interpret a program, where `<tlp>` is the name of the TLP file (without extension) and `<target>` is the name of your target program.
