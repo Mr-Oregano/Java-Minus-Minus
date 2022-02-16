@@ -452,12 +452,13 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         ]
     ), m) = 
         let
-            val (v, m1) = E(expr1, m)
+            val (v, m1 as (env, c, str)) = E(expr1, m)
             val b = getBool(v)
+            val (env1, c1, str1) = if b then M(stmt1, m1) else m1
         in
-            if b then M(stmt1, m1)
-            else m1
+            (env, c, str1)
         end
+
   | M( itree(inode("openStatement", _),
         [
             itree(inode("if", _), [] ),
@@ -470,12 +471,13 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         ]
     ), m) = 
         let
-            val (v, m1) = E(expr1, m)
+            val (v, m1 as (env, c, str)) = E(expr1, m)
             val b = getBool(v)
+            val (env1, c1, str1) = if b then M(closedStmt1, m1) else M(openStmt1, m1)
         in
-            if b then M(closedStmt1, m1)
-            else M(openStmt1, m1)
+            (env, c, str1)
         end
+        
   | M( itree(inode("openStatement", _),
         [
             itree(inode("while", _), [] ),
@@ -484,7 +486,12 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             itree(inode(")", _), [] ),
             openStmt1
         ]
-    ), m) = whileLoop(expr1, openStmt1, m)
+    ), m as (env, c, str)) = 
+        let 
+            val (env1, c1, str1) = whileLoop(expr1, openStmt1, m)
+        in
+            (env, c, str1)
+        end
         
   | M( itree(inode("openStatement", _),
         [
@@ -498,11 +505,12 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             itree(inode(")", _), [] ),
             openStmt1
         ]
-    ), m) = 
+    ), m as (env, c, str)) = 
         let
             val m1 = M(assignment1, m)
+            val (env1, c1, str1) = forLoop(expr1, openStmt1, m1, assignment2)
         in
-            forLoop(expr1, openStmt1, m1, assignment2)
+            (env, c, str1)
         end
 
   | M( itree(inode("closedStatement", _), [ child ] ), m) = M(child, m) 
@@ -518,12 +526,13 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         ]
     ), m) =
         let
-            val (v, m1) = E(expr1, m)
+            val (v, m1 as (env, c, str)) = E(expr1, m)
             val b = getBool(v)
+            val (env1, c1, str1) = if b then M(closedStmt1, m1) else M(closedStmt2, m1)
         in
-            if b then M(closedStmt1, m1)
-            else M(closedStmt2, m1)
+            (env, c, str1)
         end
+        
   | M( itree(inode("closedStatement", _),
         [
             itree(inode("while", _), [] ),
@@ -532,7 +541,13 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             itree(inode(")", _), [] ),
             closedStmt1
         ]
-    ), m) = whileLoop(expr1, closedStmt1, m)
+    ), m as (env, c, str)) = 
+        let 
+            val (env1, c1, str1) = whileLoop(expr1, closedStmt1, m)
+        in
+            (env, c, str1)
+        end
+
   | M( itree(inode("closedStatement", _),
         [
             itree(inode("for", _), [] ),
@@ -545,11 +560,12 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             itree(inode(")", _), [] ),
             closedStmt1
         ]
-    ), m) = 
+    ), m as (env, c, str)) = 
         let
             val m1 = M(assignment1, m)
+            val (env1, c1, str1) = forLoop(expr1, closedStmt1, m1, assignment2)
         in
-            forLoop(expr1, closedStmt1, m1, assignment2)
+            (env, c, str1)
         end
 
   | M( itree(inode("simpleStatement", _), [ itree(inode(";", _), [] ) ]), m) = m
