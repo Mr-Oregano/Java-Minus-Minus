@@ -17,15 +17,16 @@ statementList
 <openStatement> ::= "if" "(" <expr> ")" <statement>
                   | "if" "(" <expr> ")" <closedStatement> "else" <openStatement> 
                   | "while" "(" <expr> ")" <openStatement> 
-                  | "for" "(" <assignment> ";" <expr> ";" <assignment> ")" <openStatement> .
+                  | "for" "(" <forInit> ";" <expr> ";" <assignment> ")" <openStatement> .
 
 <closedStatement> ::= "if" "(" <expr> ")" <closedStatement> "else" <closedStatement> 
                     | "while" "(" <expr> ")" <closedStatement>
-                    | "for" "(" <assignment> ";" <expr> ";" <assignment> ")" <closedStatement>
+                    | "for" "(" <forInit> ";" <expr> ";" <assignment> ")" <closedStatement>
                     | <simpleStatement> .
 
 <simpleStatement> ::= <block> 
                     | <assignment> ";"
+                    | <init> ";"
                     | <decl> ";" 
                     | "print" "(" <expr> ")" ";"
                     | ";" .
@@ -34,9 +35,15 @@ statementList
 
 <assignment> ::= IDENTIFIER "=" <expr> | <decoratedID> .
 
+<init> ::= "bool" IDENTIFIER "=" <expr> | "int" IDENTIFIER "=" <expr> .
+
 <decl> ::= "bool" IDENTIFIER | "int" IDENTIFIER .
 
 <block> ::= "{" <statementList> "}" .
+
+(* Basic Loops *)
+
+<forInit> ::= <assignment> | <init> .
 
 (* Basic Expressions *)
 

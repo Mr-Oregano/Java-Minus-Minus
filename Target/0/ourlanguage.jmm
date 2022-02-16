@@ -11,13 +11,9 @@
 /* This is a /* nested */
  * multiline comment */
 
-bool isCool;
-int x;
-int y;
-
-x = 9;
-y = ~3;
-isCool = false;
+int x = 9;
+int y = ~3;
+bool isCool = false;
 
 // ================ ERROR EXAMPLES ===================
 // Variables must be assigned before use.
@@ -71,10 +67,9 @@ for (y = 0; y < 35; y = y + 3)
 	}
 }
 
-if (true)
-{
-
-}
+for (int i = 0; i < 24; ++i)
+	if (i % 5 == 0)
+		print(i);
 
 print(~x); // print statements can evaluate given expressions
 print(abs y);

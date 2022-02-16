@@ -497,18 +497,18 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         [
             itree(inode("for", _), [] ),
             itree(inode("(", _), [] ),
-            assignment1,
+            forInit1,
             itree(inode(";", _), [] ),
             expr1,
             itree(inode(";", _), [] ),
-            assignment2,
+            assignment1,
             itree(inode(")", _), [] ),
             openStmt1
         ]
     ), m as (env, c, str)) = 
         let
-            val m1 = M(assignment1, m)
-            val (env1, c1, str1) = forLoop(expr1, openStmt1, m1, assignment2)
+            val m1 = M(forInit1, m)
+            val (env1, c1, str1) = forLoop(expr1, openStmt1, m1, assignment1)
         in
             (env, c, str1)
         end
@@ -532,7 +532,7 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         in
             (env, c, str1)
         end
-        
+
   | M( itree(inode("closedStatement", _),
         [
             itree(inode("while", _), [] ),
@@ -552,18 +552,18 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         [
             itree(inode("for", _), [] ),
             itree(inode("(", _), [] ),
-            assignment1,
+            forInit1,
             itree(inode(";", _), [] ),
             expr1,
             itree(inode(";", _), [] ),
-            assignment2,
+            assignment1,
             itree(inode(")", _), [] ),
             closedStmt1
         ]
     ), m as (env, c, str)) = 
         let
-            val m1 = M(assignment1, m)
-            val (env1, c1, str1) = forLoop(expr1, closedStmt1, m1, assignment2)
+            val m1 = M(forInit1, m)
+            val (env1, c1, str1) = forLoop(expr1, closedStmt1, m1, assignment1)
         in
             (env, c, str1)
         end
@@ -618,6 +618,44 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             m1
         end
 
+(* initialization *)
+
+  | M( itree(inode("init", _),
+        [
+            itree(inode("bool", _), [] ),
+            id1,
+            itree(inode("=", _), [] ),
+            expr1
+        ]
+    ), m) = 
+        let
+            val (v, m1) = E(expr1, m)
+            val idName = getLeaf(id1)
+            val m2 = updateEnv(idName, BOOL, m1)
+            val loc = getLoc(accessEnv(idName, m2))
+            val m3 = updateStore(loc, v, m2)
+        in
+            m3
+        end
+
+  | M( itree(inode("init", _),
+        [
+            itree(inode("int", _), [] ),
+            id1,
+            itree(inode("=", _), [] ),
+            expr1
+        ]
+    ), m) = 
+        let
+            val (v, m1) = E(expr1, m)
+            val idName = getLeaf(id1)
+            val m2 = updateEnv(idName, INT, m1)
+            val loc = getLoc(accessEnv(idName, m2))
+            val m2 = updateStore(loc, v, m2)
+        in
+            m2
+        end
+
 (* declaration *)
 
   | M( itree(inode("decl", _),
@@ -643,6 +681,8 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         in
             updateEnv(idName, INT, m)
         end
+
+  | M( itree(inode("forInit", _), [ child ]), m) = M(child, m)
 
 (* block *)
 
