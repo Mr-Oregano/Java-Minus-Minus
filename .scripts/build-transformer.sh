@@ -1,0 +1,3 @@
+cp $DOMAIN/Transformation/Syntax/format.sty $DOMAIN/Transformation/bin/format.sty && mv $DOMAIN/Transformation/bin/format.sty $DOMAIN/Transformation/bin/format.sty.sml
+$MLTON_BIN/mlton.bat -mlb-path-var "TL $TL_SYSTEM" -mlb-path-var "DOMAIN $DOMAIN" -output "$DOMAIN\Transformation\bin\transform.exe" -verbose 1 -const "Exn.keepHistory false" -profile no -profile-branch false -profile-stack false -profile-val false "$TL_SYSTEM\Transform\transform.mlb"
+$DOMAIN/Transformation/bin/transform.exe --dir="$DOMAIN\Transformation" --grammar=$1 --start-symbol=$2
