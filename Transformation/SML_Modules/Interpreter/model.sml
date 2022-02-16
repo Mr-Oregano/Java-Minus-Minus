@@ -49,16 +49,25 @@ fun getInt(Integer v) = v
 
 fun getBool(Boolean v) = v
   | getBool _ = raise Fail("Invalid type.")
+  
+fun getVarName(loc, []) = raise Fail("ERROR: variable not found.")  
+  | getVarName(loc, (name, tp, loc_n)::envs) = 
+      let
+        val typeStr = if tp = INT then "int" else "bool";
+      in
+        if loc = loc_n then name ^ ":" ^ typeStr
+        else getVarName(loc, envs)
+      end
 
-fun accessStore(_, (_, _, [])) = raise Fail("ERROR: variable not initialized.")
+fun accessStore(loc, (env, _, [])) = raise Fail("ERROR: variable not initialized '" ^ getVarName(loc, env) ^ "'.")
   | accessStore(loc, (env, c, (loc_n, v)::s)) = 
         if loc = loc_n then v 
         else accessStore(loc, (env, c, s))
 
 fun accessEnv(id, ([], _, _)) = raise Fail("ERROR: '" ^ id ^ "' was not declared in this scope.")
-  | accessEnv(id, ((id_n, tp, loc)::env, c, s)) = 
+  | accessEnv(id, ((id_n, tp, loc)::envs, c, s)) = 
         if id = id_n then (tp, loc) 
-        else accessEnv(id, (env, c, s))
+        else accessEnv(id, (envs, c, s))
 
 (* NOTE: updateStore() will add a new entry for unused location
 		 otherwise update the value stored at the given location. *)

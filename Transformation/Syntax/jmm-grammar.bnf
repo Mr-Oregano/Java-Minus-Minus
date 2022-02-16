@@ -12,15 +12,23 @@ statementList
 
 <statementList> ::= | <statement> <statementList> .
 
-<statement> ::= <block> 
-              | <assignment> ";"
-              | <decl> ";" 
-              | "if" "(" <expr> ")" <block> 
-              | "if" "(" <expr> ")" <block> "else" <block>			
-              | <whileLoop>
-              | <forLoop>
-              | "print" "(" <expr> ")" ";"
-              | ";" .
+<statement> ::= <openStatement> | <closedStatement> .
+
+<openStatement> ::= "if" "(" <expr> ")" <statement>
+                  | "if" "(" <expr> ")" <closedStatement> "else" <openStatement> 
+                  | "while" "(" <expr> ")" <openStatement> 
+                  | "for" "(" <assignment> ";" <expr> ";" <assignment> ")" <openStatement> .
+
+<closedStatement> ::= "if" "(" <expr> ")" <closedStatement> "else" <closedStatement> 
+                    | "while" "(" <expr> ")" <closedStatement>
+                    | "for" "(" <assignment> ";" <expr> ";" <assignment> ")" <closedStatement>
+                    | <simpleStatement> .
+
+<simpleStatement> ::= <block> 
+                    | <assignment> ";"
+                    | <decl> ";" 
+                    | "print" "(" <expr> ")" ";"
+                    | ";" .
 
 (* Basic Statements *)
 
@@ -29,11 +37,6 @@ statementList
 <decl> ::= "bool" IDENTIFIER | "int" IDENTIFIER .
 
 <block> ::= "{" <statementList> "}" .
-
-(* Basic loops *)
-<whileLoop> ::= "while" "(" <expr> ")" <block> .
-
-<forLoop> ::= "for" "(" <assignment> ";" <expr> ";" <assignment> ")" <block> .
 
 (* Basic Expressions *)
 

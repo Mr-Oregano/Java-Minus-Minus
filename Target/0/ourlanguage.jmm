@@ -34,23 +34,17 @@ int h;
 // Correct type must be used
 // h = true; // ERR: type mismatch
 
-// If and Loop statements require blocks
+// If and Loop statements don't require blocks
 //
 if (x > 9 and x == 10 or x < 8)
-{
 	x = 8; // assignment
-}
 else
-{
 	isCool = true;
-}
 
 // Else statements are optional
 //
 if (isCool)
-{
 	isCool = not not isCool;
-}
 
 x = y++ + 7;
 
@@ -63,9 +57,7 @@ while (x > 0)
 // This is a forloop example
 //
 for (y = 0; y < 35; ++y)
-{
 	--x;
-}
 
 // forloops can also have assignments as an iterator
 //
