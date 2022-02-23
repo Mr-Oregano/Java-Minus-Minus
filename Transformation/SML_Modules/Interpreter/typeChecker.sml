@@ -532,60 +532,34 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
 
   | typeCheck( itree(inode("init", _),
         [
-            itree(inode("bool", _), [] ),
+            type1,
             id1,
             itree(inode("=", _), [] ),
             expr1
         ]
     ), m) =
         let
-          val t1 = typeOf(expr1, m)
-          val idName  = getLeaf(id1)
-          val m1 = updateEnv(idName, BOOL, m)
+            val tp = typeStrToEnum(getLeaf(type1))
+            val t1 = typeOf(expr1, m)
+            val idName  = getLeaf(id1)
+            val m1 = updateEnv(idName, tp, m)
         in
-          if t1 = BOOL then m1 else raise Fail("Type mistmatch")
-        end
-        
-  | typeCheck( itree(inode("init", _),
-        [
-            itree(inode("int", _), [] ),
-            id1,
-            itree(inode("=", _), [] ),
-            expr1
-        ]
-    ), m) =
-        let
-          val t1 = typeOf(expr1, m)
-          val idName  = getLeaf(id1)
-          val m1 = updateEnv(idName, INT, m)
-        in
-          if t1 = INT then m1 else raise Fail("Type mistmatch")
+            if t1 = tp then m1 else raise Fail("Type mistmatch")
         end
 
 (* declaration *)
 
   | typeCheck( itree(inode("decl", _),
         [
-            itree(inode("bool", _), [] ),
+            type1,
             id1
         ]
     ), m) = 
         let
-          val idName  = getLeaf(id1)
+            val tp = typeStrToEnum(getLeaf(type1))
+            val idName  = getLeaf(id1)
         in 
-          updateEnv(idName, BOOL, m)
-        end
-
-  | typeCheck( itree(inode("decl", _),
-        [
-            itree(inode("int", _), [] ),
-            id1
-        ]
-    ), m) = 
-        let
-          val idName  = getLeaf(id1)
-        in 
-          updateEnv(idName, INT, m)
+            updateEnv(idName, tp, m)
         end
 
   | typeCheck( itree(inode("forInit", _), [ child ]), m) = typeCheck(child, m)

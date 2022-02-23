@@ -35,9 +35,9 @@ statementList
 
 <assignment> ::= IDENTIFIER "=" <expr> | <decoratedID> .
 
-<init> ::= "bool" IDENTIFIER "=" <expr> | "int" IDENTIFIER "=" <expr> .
+<init> ::= TYPE IDENTIFIER "=" <expr> .
 
-<decl> ::= "bool" IDENTIFIER | "int" IDENTIFIER .
+<decl> ::= TYPE IDENTIFIER .
 
 <block> ::= "{" <statementList> "}" .
 

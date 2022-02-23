@@ -41,6 +41,11 @@ val initialModel = ( []:env, 0:loc, []:store )
 		 any values left in the store will be overwritten later. This will
 		 avoid the need for garbage collection. *)
 
+fun typeStrToEnum(name) = 
+  if name = "bool" then BOOL
+  else if name = "int" then INT
+  else raise Fail("Unknown type '" ^ name ^ "'")
+
 fun getLoc(tp, loc) = loc
 fun getType(tp, loc) = tp
 

@@ -37,6 +37,7 @@ alphanumeric = [A-Za-z0-9_];
 ws           = [\  \t \n];
 symbol       = [<];
 
+TYPE         = int | bool;
 IDENTIFIER   = [_a-zA-Z][_a-zA-Z0-9]*;
 INT_LITERAL  = 0 | [1-9][0-9]*;
 
@@ -105,11 +106,10 @@ ws           = [\  \t \n];
 <INITIAL> "while"                   => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "for"                     => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 
-<INITIAL> "bool"                    => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
-<INITIAL> "int"                     => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "true"                    => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "false"                   => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 
+<INITIAL> {TYPE}                    => ( SHELL("TYPE"                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> {INT_LITERAL}             => ( SHELL("INT_LITERAL"                     , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> {IDENTIFIER}              => ( SHELL("IDENTIFIER"                      , yytext,     getNextTokenPos(yytext))    );
 

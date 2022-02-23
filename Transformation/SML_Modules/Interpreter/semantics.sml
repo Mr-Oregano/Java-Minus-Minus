@@ -622,7 +622,7 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
 
   | M( itree(inode("init", _),
         [
-            itree(inode("bool", _), [] ),
+            type1,
             id1,
             itree(inode("=", _), [] ),
             expr1
@@ -630,56 +630,26 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
     ), m) = 
         let
             val (v, m1) = E(expr1, m)
+            val tp = typeStrToEnum(getLeaf(type1))
             val idName = getLeaf(id1)
-            val m2 = updateEnv(idName, BOOL, m1)
+            val m2 = updateEnv(idName, tp, m1)
             val loc = getLoc(accessEnv(idName, m2))
             val m3 = updateStore(loc, v, m2)
         in
             m3
         end
-
-  | M( itree(inode("init", _),
-        [
-            itree(inode("int", _), [] ),
-            id1,
-            itree(inode("=", _), [] ),
-            expr1
-        ]
-    ), m) = 
-        let
-            val (v, m1) = E(expr1, m)
-            val idName = getLeaf(id1)
-            val m2 = updateEnv(idName, INT, m1)
-            val loc = getLoc(accessEnv(idName, m2))
-            val m2 = updateStore(loc, v, m2)
-        in
-            m2
-        end
-
-(* declaration *)
-
+        
   | M( itree(inode("decl", _),
         [
-            itree(inode("bool", _), [] ),
+            type1,
             id1
         ]
     ), m) = 
         let
+            val tp = typeStrToEnum(getLeaf(type1))
             val idName  = getLeaf(id1)
         in
-            updateEnv(idName, BOOL, m)
-        end
-
-  | M( itree(inode("decl", _),
-        [
-            itree(inode("int", _), [] ),
-            id1
-        ]
-    ), m) = 
-        let
-            val idName  = getLeaf(id1)
-        in
-            updateEnv(idName, INT, m)
+            updateEnv(idName, tp, m)
         end
 
   | M( itree(inode("forInit", _), [ child ]), m) = M(child, m)
