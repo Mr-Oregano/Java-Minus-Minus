@@ -8,7 +8,7 @@ USE_LR_PARSER
         Chaz Brock
 *)
 
-(* TODO: As an interesting feature create an 'xor' operator? *)
+(* TODO: Add quote escape character \" for strings *)
 (* TODO: Add functions and function calls *)
 (* TODO: Implement 'input' function *)
 (* TODO: Add control flow statements (e.g. 'continue' and 'break') *)
