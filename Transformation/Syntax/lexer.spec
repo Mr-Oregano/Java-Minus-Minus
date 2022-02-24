@@ -18,7 +18,7 @@ fun removeFrontAndBack( yytext ) =
 
 TYPE         = int | bool | string;
 INT_LITERAL  = 0 | [1-9][0-9]*;
-STR_LITERAL  = \"[^\"\n]*\";
+STR_LITERAL  = \"([^\"\n]|(\\\"))*\";
 IDENTIFIER   = [_a-zA-Z][_a-zA-Z0-9]*;
 
 ws           = [\  \t \n];

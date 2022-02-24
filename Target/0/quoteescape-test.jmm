@@ -1,0 +1,7 @@
+println("\"Hello"); // Output: "Hello
+println("\"Test\"\"\"\""); // Output: "Test""""
+
+println(".\n.\nNEWLINE\n.\n.");
+println("<\tTAB\t>");
+
+// println("Hello "friend"") // Parsing error
