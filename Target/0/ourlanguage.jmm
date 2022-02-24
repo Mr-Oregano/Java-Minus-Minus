@@ -11,41 +11,41 @@
 /* This is a /* nested */
  * multiline comment */
 
-print("Hello, world!\n\n");
+println("Hello, world!\n");
 
 int x = 9;
 int y = ~3;
 bool isCool = false;
 
 string s = "this is my string";
-print(s + "\n");
+println(s);
 
 string s1 = "These strings ";
 string s2 = "have been concated";
 string s3 = s1 + s2;
-print(s3 + "\n");
+println(s3);
 
 // =============== TESTING EQUALITY ===============
 
 
 string s4 = s1;
-print("\ns1 and s4 are equal: " + (s1 == s4));
-print("\ns1 and s4 are NOT equal: " + (s1 != s4));
+println("\ns1 and s4 are equal: " + (s1 == s4));
+println("s1 and s4 are NOT equal: " + (s1 != s4));
 
-print("\nx and y are equal: " + (x == y));
-print("\nx and y are NOT equal: " + (x != y));
+println("x and y are equal: " + (x == y));
+println("x and y are NOT equal: " + (x != y));
 
 // Implicit string conversion for other datatypes.
-print("\n\nisCool bool is: " + isCool + "\n");
+println("\nisCool bool is: " + isCool);
 
 // ================ ERROR EXAMPLES ===================
 // Variables must be assigned before use.
 int h;
 
-// print(h + "\n"); // ERR: variable not initialized
+// println(h); // ERR: variable not initialized
 
 // Variables must be declared before use
-// print(undeclared); // ERR: variable not declared
+// println(undeclared); // ERR: variable not declared
 
 // Variables cannot be redeclared
 // int h; // ERR: variable redeclaration
@@ -94,10 +94,10 @@ for (int i = 0; i < 24; ++i)
 	if (i % 5 == 0)
 		print(i + "\n");
 
-print(~x + "\n"); // print statements can evaluate given expressions
-print((abs y) + "\n");
-print(abs(x) + "\n");
-print((x + y * 4 ^ 3 ^ 2) + "\n");
+println(~x); // print statements can evaluate given expressions
+println(abs y);
+println(abs(x));
+println(x + y * 4 ^ 3 ^ 2);
 
 // Our language allows empty blocks and statements
 

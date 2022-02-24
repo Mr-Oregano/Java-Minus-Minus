@@ -307,7 +307,6 @@ fun typeOf( itree(inode("expr", _),
         end
 
   | typeOf( itree(inode("STR_LITERAL", _), [ _ ] ), m) = STRING
-
   | typeOf( itree(inode("INT_LITERAL", _), [ _ ] ), m) = INT
 
 (* decoratedID *)
@@ -535,6 +534,20 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val t1 = typeOf(expr1, m)
         in
             if t1 <> ERROR then m else raise Fail("Type mistmatch 'print(<ERROR>)'")
+        end
+  | typeCheck( itree(inode("simpleStatement", _),
+        [
+            itree(inode("println", _), [] ),
+            itree(inode("(", _), [] ),
+            expr1,
+            itree(inode(")", _), [] ),
+            itree(inode(";", _), [] )
+        ]
+    ), m) = 
+        let 
+            val t1 = typeOf(expr1, m)
+        in
+            if t1 <> ERROR then m else raise Fail("Type mistmatch 'println(<ERROR>)'")
         end
 
 (* assignment *)

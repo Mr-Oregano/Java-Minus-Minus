@@ -8,7 +8,6 @@ USE_LR_PARSER
         Chaz Brock
 *)
 
-(* TODO: Implement 'println' statement *)
 (* TODO: As an interesting feature create an 'xor' operator? *)
 (* TODO: Add functions and function calls *)
 (* TODO: Implement 'input' function *)
@@ -35,6 +34,7 @@ statementList
                     | <init> ";"
                     | <decl> ";" 
                     | "print" "(" <expr> ")" ";"
+                    | "println" "(" <expr> ")" ";"
                     | ";" .
 
 (* Basic Statements *)

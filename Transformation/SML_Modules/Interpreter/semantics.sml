@@ -643,6 +643,21 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
             print(dvToString(v));
             m1
         end
+  | M( itree(inode("simpleStatement", _),
+        [
+            itree(inode("println", _), [] ),
+            itree(inode("(", _), [] ),
+            expr1,
+            itree(inode(")", _), [] ),
+            itree(inode(";", _), [] )
+        ]
+    ), m) = 
+        let 
+            val (v, m1) = E(expr1, m)
+        in
+            print(dvToString(v) ^ "\n");
+            m1
+        end
 
 (* assignment *)
 

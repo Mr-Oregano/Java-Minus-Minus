@@ -76,6 +76,7 @@ ws           = [\  \t \n];
 
 <INITIAL> "abs"	                    => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 
+<INITIAL> "println"                 => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 <INITIAL> "print"                   => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 
 <INITIAL> "else"                    => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );

@@ -1,0 +1,15 @@
+/*
+ * 'println()' test
+ * Date: 2/24/2022
+ */
+
+println("Hello, world!");
+print("Next line");
+println("Same line");
+
+/* Expected Output:
+ *		
+ *	Hello, world!
+ *	Next lineSame line
+ *
+ */ 
