@@ -91,7 +91,7 @@ fun E( itree(inode("expr", _),
         [
             andExpr1,
             itree(inode("and", _), []),
-            equalExpr1
+            xorExpr1
         ]
     ), m) =
         let
@@ -99,10 +99,34 @@ fun E( itree(inode("expr", _),
             val b1 = getBool(v1)
         in
             if not b1 then (v1, m1) 
-            else E(equalExpr1, m1)
+            else E(xorExpr1, m1)
         end
 
-  | E( itree(inode("andExpr", _), [ equalExpr1 ]), m) = E(equalExpr1, m)
+  | E( itree(inode("andExpr", _), [ xorExpr1 ]), m) = E(xorExpr1, m)
+
+(* xorExpr *)
+
+(* NOTES: OR and AND were both short circuited as we can determine
+          the result based on just one of the expressions. XOR, however,
+          requires both expressions to be evaluated. *)
+
+  | E( itree(inode("xorExpr", _),
+        [
+            xorExpr1,
+            itree(inode("xor", _), []),
+            equalExpr1
+        ]
+    ), m) =
+        let
+            val (v1, m1) = E(xorExpr1, m)
+            val (v2, m2) = E(equalExpr1, m1)
+            val b1 = getBool(v1)
+            val b2 = getBool(v2)
+        in
+            (Boolean (b1 <> b2), m2) 
+        end
+
+  | E( itree(inode("xorExpr", _), [ equalExpr1 ]), m) = E(equalExpr1, m)
 
 (* equalExpr *)
 

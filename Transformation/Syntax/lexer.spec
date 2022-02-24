@@ -72,6 +72,7 @@ ws           = [\  \t \n];
 
 <INITIAL> "and"	                    => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 <INITIAL> "or"	                    => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
+<INITIAL> "xor"	                    => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 <INITIAL> "not"	                    => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 
 <INITIAL> "abs"	                    => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );

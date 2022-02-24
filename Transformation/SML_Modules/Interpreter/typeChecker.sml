@@ -34,18 +34,37 @@ fun typeOf( itree(inode("expr", _),
         [
             andExpr1,
             itree(inode("and", _), []),
-            equalExpr1
+            xorExpr1
         ]
     ), m) =
         let 
             val t1 = typeOf(andExpr1, m)
+            val t2 = typeOf(xorExpr1, m)
+        in
+            if t1 = t2 andalso t1 = BOOL then BOOL 
+            else ERROR
+        end
+
+  | typeOf( itree(inode("andExpr", _), [ xorExpr1 ]), m) = typeOf(xorExpr1, m)
+
+(* xorExpr *)
+
+  | typeOf( itree(inode("xorExpr", _),
+        [
+            xorExpr1,
+            itree(inode("xor", _), []),
+            equalExpr1
+        ]
+    ), m) =
+        let 
+            val t1 = typeOf(xorExpr1, m)
             val t2 = typeOf(equalExpr1, m)
         in
             if t1 = t2 andalso t1 = BOOL then BOOL 
             else ERROR
         end
 
-  | typeOf( itree(inode("andExpr", _), [ equalExpr1 ]), m) = typeOf(equalExpr1, m)
+  | typeOf( itree(inode("xorExpr", _), [ equalExpr1 ]), m) = typeOf(equalExpr1, m)
 
 (* equalExpr *)
 

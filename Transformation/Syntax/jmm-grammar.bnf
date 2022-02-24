@@ -54,7 +54,8 @@ statementList
 (* Basic Expressions *)
 
 <expr> ::= <expr> "or" <andExpr> | <andExpr> .
-<andExpr> ::= <andExpr> "and" <equalExpr> | <equalExpr> .
+<andExpr> ::= <andExpr> "and" <xorExpr> | <xorExpr> .
+<xorExpr> ::= <xorExpr> "xor" <equalExpr> | <equalExpr> .
 
 <equalExpr> ::= <equalExpr> "==" <relExpr> 
               | <equalExpr> "!=" <relExpr> 

@@ -1,0 +1,26 @@
+/*
+ * 'xor' expression test
+ * Date: 2/24/2022
+ */
+
+println(true xor true);		// False
+println(true xor false);	// True
+println(false xor true);	// True
+println(false xor false);	// False
+
+/* NOTE: 
+ * 	'xor' is NOT short circuited (unlike 'and' & 'or'). It requires evaluation and
+ * 	execution of both sides. It also has higher precedence than 'and' & 'or'.
+ */
+
+int i = 0;
+println(true or (i++ > 10)); // 'i' will remain 0 since 'or' is short circuited.
+println("Value of 'i': " + i);
+
+println(true xor (i++ > 10)); // 'i' will be incremented to 1 since 'xor' is NOT short circuited.
+println("Value of 'i': " + i);
+
+println(true and false xor true); // True
+println(true and true xor true); // False
+println(true xor true or true); // True
+println(true xor true or false); // False
