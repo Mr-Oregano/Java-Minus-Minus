@@ -169,6 +169,36 @@ fun E( itree(inode("expr", _),
         in
             (Boolean (i1 > i2), m2)
         end
+  | E( itree(inode("relExpr", _), 
+        [
+            relExpr1,
+            itree(inode("<=", _), [] ),
+            sumExpr1
+        ]
+    ), m) =
+        let
+            val (v1, m1) = E(relExpr1, m)
+            val (v2, m2) = E(sumExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
+        in
+            (Boolean (i1 <= i2), m2)
+        end
+  | E( itree(inode("relExpr", _), 
+        [
+            relExpr1,
+            itree(inode(">=", _), [] ),
+            sumExpr1
+        ]
+    ), m) =
+        let
+            val (v1, m1) = E(relExpr1, m)
+            val (v2, m2) = E(sumExpr1, m1)
+            val i1 = getInt(v1)
+            val i2 = getInt(v2)
+        in
+            (Boolean (i1 >= i2), m2)
+        end
 
   | E( itree(inode("relExpr", _), [ sumExpr1 ]), m) = E(sumExpr1, m)
 

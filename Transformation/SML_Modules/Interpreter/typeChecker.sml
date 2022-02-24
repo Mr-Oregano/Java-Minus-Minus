@@ -111,6 +111,36 @@ fun typeOf( itree(inode("expr", _),
             else ERROR
         end
 
+  | typeOf( itree(inode("relExpr", _), 
+        [
+            relExpr1,
+            itree(inode("<=", _), [] ),
+            sumExpr1
+        ]
+    ), m) =
+        let
+            val t1 = typeOf(relExpr1, m)
+            val t2 = typeOf(sumExpr1, m)
+        in
+            if t1 = t2 andalso t1 = INT then BOOL 
+            else ERROR
+        end
+    
+  | typeOf( itree(inode("relExpr", _), 
+        [
+            relExpr1,
+            itree(inode(">=", _), [] ),
+            sumExpr1
+        ]
+    ), m) =
+        let
+            val t1 = typeOf(relExpr1, m)
+            val t2 = typeOf(sumExpr1, m)
+        in
+            if t1 = t2 andalso t1 = INT then BOOL 
+            else ERROR
+        end
+
   | typeOf( itree(inode("relExpr", _), [ sumExpr1 ]), m) = typeOf(sumExpr1, m)
 
 (* sumExpr *)

@@ -1,0 +1,19 @@
+/*
+ * Relational expression test.
+ * Date: 2/24/2022
+ */
+
+print((9 < 10) + "\n"); // True
+print((9 > 10) + "\n"); // False
+print((9 <= 10) + "\n"); // True
+print((9 >= 10) + "\n"); // False
+
+print((10 < 10) + "\n"); // False
+print((10 > 10) + "\n"); // False
+print((10 <= 10) + "\n"); // True
+print((10 >= 10) + "\n"); // True
+
+print((11 < 10) + "\n"); // False
+print((11 > 10) + "\n"); // True
+print((11 <= 10) + "\n"); // False
+print((11 >= 10) + "\n"); // True

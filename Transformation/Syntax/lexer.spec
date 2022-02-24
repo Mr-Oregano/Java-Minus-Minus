@@ -53,6 +53,8 @@ ws           = [\  \t \n];
 
 <INITIAL> "<"                       => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 <INITIAL> ">"                       => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
+<INITIAL> "<="                       => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
+<INITIAL> ">="                       => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 <INITIAL> "=="                      => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 <INITIAL> "="                       => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );
 <INITIAL> "!="                      => ( SHELL(yytext, yytext, getNextTokenPos(yytext)) );

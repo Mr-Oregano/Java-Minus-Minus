@@ -8,7 +8,6 @@ USE_LR_PARSER
         Chaz Brock
 *)
 
-(* TODO: Implement >= and <= *)
 (* TODO: Implement 'println' statement *)
 (* TODO: As an interesting feature create an 'xor' operator? *)
 (* TODO: Add functions and function calls *)
@@ -63,6 +62,8 @@ statementList
 
 <relExpr> ::= <relExpr> "<" <sumExpr> 
             | <relExpr> ">" <sumExpr> 
+            | <relExpr> "<=" <sumExpr> 
+            | <relExpr> ">=" <sumExpr> 
             | <sumExpr> .
 
 <sumExpr> ::= <sumExpr> "+" <mulExpr> 
