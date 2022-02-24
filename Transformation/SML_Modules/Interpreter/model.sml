@@ -13,16 +13,16 @@ struct
 fun getLeaf( term ) = CONCRETE.leavesToStringRaw term 
 
 
-(* For your typeChecker you may want to have a datatype that defines the types 
-  (i.e., integer, boolean and error) in your language. *)
-datatype types = INT | BOOL | ERROR;
+(* TODO: Add REAL types *)
+datatype types = INT 
+               | BOOL
+               | STRING 
+               | ERROR;
 
 
-(* It is recommended that your model store integers and Booleans in an internal form (i.e., as terms belonging to
-   a userdefined datatype (e.g., denotable_value). If this is done, the store can be modeled as a list of such values.
-*)
 datatype denotable_value =  Boolean of bool 
-                          | Integer of int;
+                          | Integer of int
+                          | String  of string; 
 
 
 type loc   = int
@@ -44,7 +44,22 @@ val initialModel = ( []:env, 0:loc, []:store )
 fun typeStrToEnum(name) = 
   if name = "bool" then BOOL
   else if name = "int" then INT
+  else if name = "string" then STRING
   else raise Fail("Unknown type '" ^ name ^ "'")
+
+fun typeEnumToStr(tp : types) = 
+  if tp = BOOL then "bool"
+  else if tp = INT then "int"
+  else if tp = STRING then "string"
+  else "error"
+
+fun typeDVToEnum(Integer _) = INT
+  | typeDVToEnum(Boolean _) = BOOL
+  | typeDVToEnum(String _)  = STRING
+
+fun dvToString(Integer v) = Int.toString(v)
+  | dvToString(Boolean v) = Bool.toString(v)
+  | dvToString(String v)  = v
 
 fun getLoc(tp, loc) = loc
 fun getType(tp, loc) = tp
@@ -58,7 +73,7 @@ fun getBool(Boolean v) = v
 fun getVarName(loc, []) = raise Fail("ERROR: variable not found.")  
   | getVarName(loc, (name, tp, loc_n)::envs) = 
       let
-        val typeStr = if tp = INT then "int" else "bool";
+        val typeStr = typeEnumToStr(tp);
       in
         if loc = loc_n then name ^ ":" ^ typeStr
         else getVarName(loc, envs)
@@ -103,21 +118,19 @@ fun updateEnv(id, tp, (env, c, s)) =
 
 fun envEntryToString(name, tp, loc) = 
     let 
-      val typeStr = if tp = INT then "int" else "bool";
+      val typeStr = typeEnumToStr(tp);
       val locStr = Int.toString(loc);
     in
       name ^ ":" ^ typeStr ^ " @ " ^ locStr
     end;
 
-fun dvToString(Integer v) = Int.toString(v)
-  | dvToString(Boolean v) = Bool.toString(v)
   
 fun storeEntryToString(loc, v) = 
     let 
-      val typeStr = dvToString(v);
+      val vStr = dvToString(v);
       val locStr = Int.toString(loc);
     in
-      "loc=" ^ locStr ^ ", val=" ^ typeStr
+      "loc=" ^ locStr ^ ", val=" ^ vStr
     end;
 
 fun printStore([]) = ()

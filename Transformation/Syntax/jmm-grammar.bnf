@@ -8,6 +8,12 @@ USE_LR_PARSER
         Chaz Brock
 *)
 
+(* TODO: Implement >= and <= *)
+(* TODO: Implement 'println' statement *)
+(* TODO: As an interesting feature create an 'xor' operator? *)
+(* TODO: Add functions and function calls *)
+(* TODO: Add control flow statements (e.g. 'continue' and 'break') *)
+
 statementList
 
 <statementList> ::= | <statement> <statementList> .
@@ -78,6 +84,7 @@ statementList
            | "true"
            | "false" 
            | INT_LITERAL 
+           | STR_LITERAL
            | "(" <expr> ")" 
            | <decoratedID> .
 

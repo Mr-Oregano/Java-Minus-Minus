@@ -127,6 +127,7 @@ fun typeOf( itree(inode("expr", _),
             val t2 = typeOf(mulExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then INT
+            else if t1 = STRING orelse t2 = STRING then STRING
             else ERROR
         end
 
@@ -275,6 +276,8 @@ fun typeOf( itree(inode("expr", _),
             getType(accessEnv(idName, m))
         end
 
+  | typeOf( itree(inode("STR_LITERAL", _), [ _ ] ), m) = STRING
+
   | typeOf( itree(inode("INT_LITERAL", _), [ _ ] ), m) = INT
 
 (* decoratedID *)
@@ -367,7 +370,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val t1 = typeOf(expr1, m)
             val m1 = typeCheck(stmt1, m)
         in
-            if t1 = BOOL then m else raise Fail("Type mistmatch")
+            if t1 = BOOL then m else raise Fail("Type mistmatch 'if (<ERROR>) ...'")
         end
 
   | typeCheck( itree(inode("openStatement", _),
@@ -386,7 +389,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m1 = typeCheck(closedStmt1, m)
             val m2 = typeCheck(openStmt1, m1)
         in
-            if t1 = BOOL then m else raise Fail("Type mistmatch")
+            if t1 = BOOL then m else raise Fail("Type mistmatch 'if (<ERROR>) ... else ...'")
         end
   | typeCheck( itree(inode("openStatement", _),
         [
@@ -401,7 +404,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
           val t1 = typeOf(expr1, m)    
           val m1 = typeCheck(openStmt1, m)
         in
-          if t1 = BOOL then m else raise Fail("Type mistmatch")
+          if t1 = BOOL then m else raise Fail("Type mistmatch 'while (<ERROR>) ...'")
         end
   | typeCheck( itree(inode("openStatement", _),
         [
@@ -422,7 +425,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m2 = typeCheck(assignment2, m1)    
             val m3 = typeCheck(openStmt1, m2)
         in
-            if t1 = BOOL then m else raise Fail("Type mistmatch")
+            if t1 = BOOL then m else raise Fail("Type mistmatch 'for (... ; <ERROR>; ...) ...'")
         end
 
   | typeCheck( itree(inode("closedStatement", _), [ child ] ), m) = typeCheck(child, m) 
@@ -442,7 +445,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m1 = typeCheck(closedStmt1, m)
             val m2 = typeCheck(closedStmt2, m1)
         in
-            if t1 = BOOL then m else raise Fail("Type mistmatch")
+            if t1 = BOOL then m else raise Fail("Type mistmatch 'if (<ERROR>) ... else ...'")
         end
   | typeCheck( itree(inode("closedStatement", _),
         [
@@ -457,7 +460,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
           val t1 = typeOf(expr1, m)    
           val m1 = typeCheck(closedStmt1, m)
         in
-          if t1 = BOOL then m else raise Fail("Type mistmatch")
+          if t1 = BOOL then m else raise Fail("Type mistmatch 'while (<ERROR>) ...'")
         end
   | typeCheck( itree(inode("closedStatement", _),
         [
@@ -478,7 +481,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val m2 = typeCheck(assignment2, m1)    
             val m3 = typeCheck(closedStmt1, m2)
         in
-            if t1 = BOOL then m else raise Fail("Type mistmatch")
+            if t1 = BOOL then m else raise Fail("Type mistmatch 'for (... ; <ERROR>; ...) ...'")
         end
 
   | typeCheck( itree(inode("simpleStatement", _), [ itree(inode(";", _), [] ) ]), m) = m
@@ -501,7 +504,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
         let 
             val t1 = typeOf(expr1, m)
         in
-            if t1 <> ERROR then m else raise Fail("Type mistmatch")
+            if t1 <> ERROR then m else raise Fail("Type mistmatch 'print(<ERROR>)'")
         end
 
 (* assignment *)
@@ -518,14 +521,14 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
           val idName  = getLeaf(id1)
           val t2 = getType(accessEnv(idName, m))
         in
-          if t1 = t2 then m else raise Fail("Type mistmatch")
+          if t1 = t2 then m else raise Fail("Type mistmatch '" ^ idName ^ ":" ^ typeEnumToStr(t2) ^ " = <" ^ typeEnumToStr(t1) ^ ">'")
         end
         
   | typeCheck( itree(inode("assignment", _), [ decoratedID1 ]), m) = 
         let 
             val t1 = typeOf(decoratedID1, m)
         in
-            if t1 = INT then m else raise Fail("Type mistmatch")
+            if t1 = INT then m else raise Fail("Type mistmatch '<ERROR>++/<ERROR>--/++<ERROR>/--<ERROR>'")
         end
 
 (* initialization *)
@@ -544,7 +547,7 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             val idName  = getLeaf(id1)
             val m1 = updateEnv(idName, tp, m)
         in
-            if t1 = tp then m1 else raise Fail("Type mistmatch")
+            if t1 = tp then m1 else raise Fail("Type mistmatch '" ^ idName ^ ":" ^ typeEnumToStr(tp) ^ " = <" ^ typeEnumToStr(t1) ^ ">'")
         end
 
 (* declaration *)

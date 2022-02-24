@@ -184,10 +184,23 @@ fun E( itree(inode("expr", _),
         let
             val (v1, m1) = E(sumExpr1, m)
             val (v2, m2) = E(mulExpr1, m1)
-            val i1 = getInt(v1)
-            val i2 = getInt(v2)
+            val tp1 = typeDVToEnum(v1)
+            val tp2 = typeDVToEnum(v2)
         in
-            (Integer (i1 + i2), m2)
+            if tp1 = tp2 andalso tp1 = INT then
+                let
+                    val i1 = getInt(v1)
+                    val i2 = getInt(v2)
+                in
+                    (Integer (i1 + i2), m2)
+                end
+            else
+                let
+                    val s1 = dvToString(v1) 
+                    val s2 = dvToString(v2) 
+                in
+                    (String (s1 ^ s2), m2)
+                end
         end
         
   | E( itree(inode("sumExpr", _), 
@@ -343,6 +356,14 @@ fun E( itree(inode("expr", _),
             val v = accessStore(loc, m)
         in
             (v, m)
+        end
+
+  | E( STR_LITERAL as itree(inode("STR_LITERAL", _), [ _ ] ), m) = 
+        let
+            val literal = getLeaf(STR_LITERAL)
+            val v = valOf(String.fromString literal)
+        in
+            (String v, m)
         end
 
   | E( INT_LITERAL as itree(inode("INT_LITERAL", _), [ _ ] ), m) = 
@@ -589,7 +610,7 @@ fun M( itree(inode("statementList", _), [ itree(inode("", _), []) ]), m) = m
         let 
             val (v, m1) = E(expr1, m)
         in
-            print(dvToString(v) ^ "\n");
+            print(dvToString(v));
             m1
         end
 

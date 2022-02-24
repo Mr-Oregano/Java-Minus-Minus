@@ -24,9 +24,14 @@ fun generateSchemaTokenName( yytext ) =
     in
         implode(explode("!#schema_variable_") @ s2)        
     end;
-    
-(* ------------------------------------------------------------------ *)
 
+fun removeFrontAndBack( yytext ) =     
+    let
+        fun pop( [] ) = raise General.Fail("drop(): provided list was empty.")
+          | pop( chars ) = List.take( chars, List.length(chars) - 1 )
+    in
+        implode(pop(List.tl(explode yytext)))
+    end;
 (* ============================================================================================== *)
 %%
 %header (functor Target_LexFn(val getNextTokenPos : string -> {line: word, column: word}));
@@ -37,15 +42,15 @@ alphanumeric = [A-Za-z0-9_];
 ws           = [\  \t \n];
 symbol       = [<];
 
-TYPE         = int | bool;
-IDENTIFIER   = [_a-zA-Z][_a-zA-Z0-9]*;
+TYPE         = int | bool | string;
 INT_LITERAL  = 0 | [1-9][0-9]*;
+STR_LITERAL  = \"[^\"\n]*\";
+IDENTIFIER   = [_a-zA-Z][_a-zA-Z0-9]*;
 
 string       = \"{alphanumeric}*\";
 symbolic_id  = {symbol}+{alphanumeric}*;
 schema_id    = "<" {alpha}{alphanumeric}* ">_" {alphanumeric}+;
 ws           = [\  \t \n];
-
 
 %s COMMENT;
 %s SINGLE_COMMENT;
@@ -110,13 +115,10 @@ ws           = [\  \t \n];
 <INITIAL> "false"                   => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 
 <INITIAL> {TYPE}                    => ( SHELL("TYPE"                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> {STR_LITERAL}             => ( SHELL("STR_LITERAL" , removeFrontAndBack(yytext),     getNextTokenPos(yytext))    );
 <INITIAL> {INT_LITERAL}             => ( SHELL("INT_LITERAL"                     , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> {IDENTIFIER}              => ( SHELL("IDENTIFIER"                      , yytext,     getNextTokenPos(yytext))    );
 
 <INITIAL> {ws}+                     => ( getNextTokenPos(yytext); lex()  );
 <INITIAL> {schema_id}               => ( SHELL(generateSchemaTokenName(yytext)	 , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "[:]"                     => ( SHELL(""                                , yytext,     getNextTokenPos(yytext))    );
-
-<INITIAL> "~~"                      => ( raise Fail("unbound variable or constructor: " ^ yytext) );
-
-<INITIAL> .                         => ( error("ignored an unprintable character: " ^ yytext); getNextTokenPos(yytext); lex()  );
