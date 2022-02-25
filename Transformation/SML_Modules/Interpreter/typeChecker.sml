@@ -1,4 +1,3 @@
-(* =========================================================================================================== *)
 structure TypeChecker =
 struct
 
@@ -6,11 +5,7 @@ open Model;
 open CONCRETE_REPRESENTATION;
 
 (* =========================================================================================================== *)
-(*
-    Here is where your typeCheck and typeOf definitions go. The primary challenge here is to translate the parse 
-    expression notation we used in M2 to the actual SML tree patterns used in the TL System. See the comments in
-    the semantics.sml file for a more detailed discussion on this topic. 
-*)
+
 fun typeOf( itree(inode("expr", _), 
         [ 
             expr1,
@@ -71,25 +66,11 @@ fun typeOf( itree(inode("expr", _),
   | typeOf( itree(inode("equalExpr", _), 
         [ 
             equalExpr1,
-            itree(inode("==", _), [] ),
+            _,
             relExpr1
         ] 
     ), m) =
         let 
-            val t1 = typeOf(equalExpr1, m)
-            val t2 = typeOf(relExpr1, m)
-        in
-            if t1 = t2 andalso t1 <> ERROR then BOOL else ERROR
-        end
-
-  | typeOf( itree(inode("equalExpr", _), 
-        [ 
-            equalExpr1,
-            itree(inode("!=", _), [] ),
-            relExpr1
-        ] 
-    ), m) =
-        let
             val t1 = typeOf(equalExpr1, m)
             val t2 = typeOf(relExpr1, m)
         in
@@ -103,52 +84,7 @@ fun typeOf( itree(inode("expr", _),
   | typeOf( itree(inode("relExpr", _), 
         [
             relExpr1,
-            itree(inode("<", _), [] ),
-            sumExpr1
-        ]
-    ), m) =
-        let
-            val t1 = typeOf(relExpr1, m)
-            val t2 = typeOf(sumExpr1, m)
-        in
-            if t1 = t2 andalso t1 = INT then BOOL 
-            else ERROR
-        end
-
-  | typeOf( itree(inode("relExpr", _), 
-        [
-            relExpr1,
-            itree(inode(">", _), [] ),
-            sumExpr1
-        ]
-    ), m) =
-        let
-            val t1 = typeOf(relExpr1, m)
-            val t2 = typeOf(sumExpr1, m)
-        in
-            if t1 = t2 andalso t1 = INT then BOOL 
-            else ERROR
-        end
-
-  | typeOf( itree(inode("relExpr", _), 
-        [
-            relExpr1,
-            itree(inode("<=", _), [] ),
-            sumExpr1
-        ]
-    ), m) =
-        let
-            val t1 = typeOf(relExpr1, m)
-            val t2 = typeOf(sumExpr1, m)
-        in
-            if t1 = t2 andalso t1 = INT then BOOL 
-            else ERROR
-        end
-    
-  | typeOf( itree(inode("relExpr", _), 
-        [
-            relExpr1,
-            itree(inode(">=", _), [] ),
+            _,
             sumExpr1
         ]
     ), m) =
@@ -183,7 +119,7 @@ fun typeOf( itree(inode("expr", _),
   | typeOf( itree(inode("sumExpr", _), 
         [ 
         sumExpr1,
-        itree(inode("-", _), [] ),
+        _,
         mulExpr1
         ] 
     ), m) =
@@ -202,7 +138,7 @@ fun typeOf( itree(inode("expr", _),
   | typeOf( itree(inode("mulExpr", _), 
         [ 
             mulExpr1,
-            itree(inode("*", _), [] ),
+            _,
             unaryExpr1
         ]
     ), m) =
@@ -211,36 +147,6 @@ fun typeOf( itree(inode("expr", _),
             val t2 = typeOf(unaryExpr1, m)
         in
             if t1 = t2 andalso t1 = INT then INT
-            else ERROR
-        end
-
-  | typeOf( itree(inode("mulExpr", _), 
-        [ 
-            mulExpr1,
-            itree(inode("/", _), [] ),
-            unaryExpr1
-        ] 
-    ), m) =
-        let
-            val t1 = typeOf(mulExpr1, m)
-            val t2 = typeOf(unaryExpr1, m)
-        in
-            if t1 = t2 andalso t1 = INT then INT
-            else ERROR
-        end
-
-  | typeOf( itree(inode("mulExpr", _), 
-        [ 
-            mulExpr1,
-            itree(inode("%", _), [] ),
-            unaryExpr1
-        ] 
-    ), m) = 
-        let
-            val t1 = typeOf(mulExpr1, m)
-            val t2 = typeOf(unaryExpr1, m)
-        in
-            if t1 = t2 andalso t1 = INT then INT 
             else ERROR
         end
 
@@ -309,6 +215,15 @@ fun typeOf( itree(inode("expr", _),
 
   | typeOf( itree(inode("factor", _), [ itree(inode("true", _), [] ) ]), m) = BOOL
   | typeOf( itree(inode("factor", _), [ itree(inode("false", _), [] ) ]),  m) = BOOL        
+  | typeOf( itree(inode("factor", _), [ ID as itree(inode("IDENTIFIER", _), _) ]), m) = 
+        let 
+            val idName = getLeaf(ID)
+        in
+            getType(accessEnv(idName, m))
+        end
+
+  | typeOf( itree(inode("factor", _), [ itree(inode("STR_LITERAL", _), _) ]), m) = STRING
+  | typeOf( itree(inode("factor", _), [ itree(inode("INT_LITERAL", _), _) ]), m) = INT
   | typeOf( itree(inode("factor", _), [ child ]), m) = typeOf(child, m)
   | typeOf( itree(inode("factor", _), 
         [ 
@@ -317,16 +232,6 @@ fun typeOf( itree(inode("expr", _),
             itree(inode(")", _), [] )
         ] 
     ), m) = typeOf(expr1, m)
-    
-  | typeOf( ID as itree(inode("IDENTIFIER", _), [ _ ] ), m) = 
-        let 
-            val idName  = getLeaf(ID)
-        in
-            getType(accessEnv(idName, m))
-        end
-
-  | typeOf( itree(inode("STR_LITERAL", _), [ _ ] ), m) = STRING
-  | typeOf( itree(inode("INT_LITERAL", _), [ _ ] ), m) = INT
 
 (* decoratedID *)
 
@@ -382,10 +287,12 @@ fun typeOf( itree(inode("expr", _),
             if t1 = INT then INT else ERROR
         end
 
-  | typeOf( itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn typeOf root = " ^ x_root ^ "\n\n")
+(* Fails *)
+  
+  | typeOf( TREE as itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn typeOf root() = " ^ x_root ^ "\n\tHere ---->\t\"" ^ getLeaf(TREE) ^ "\"\n\n")
   | typeOf _ = raise Fail("Error in TypeChecker.typeOf - this should never occur")
 
-(* Type Checker *)
+(* =========================================================================================================== *)
 
 fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m) = m
   | typeCheck( itree(inode("statementList", _), 
@@ -405,7 +312,9 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
 
   | typeCheck( itree(inode("statement", _), [ child ] ), m) = typeCheck(child, m) 
 
-  | typeCheck( itree(inode("openStatement", _),
+(* Open & Closed statements *)
+
+  | typeCheck( itree(_,
         [
             itree(inode("if", _), [] ),
             itree(inode("(", _), [] ),
@@ -421,40 +330,43 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             if t1 = BOOL then m else raise Fail("Type mistmatch 'if (<ERROR>) ...'")
         end
 
-  | typeCheck( itree(inode("openStatement", _),
+  | typeCheck( itree(_,
         [
             itree(inode("if", _), [] ),
             itree(inode("(", _), [] ),
             expr1,
             itree(inode(")", _), [] ),
-            closedStmt1,
+            stmt1,
             itree(inode("else", _), [] ),
-            openStmt1
+            stmt2
         ]
     ), m) = 
         let
             val t1 = typeOf(expr1, m)
-            val m1 = typeCheck(closedStmt1, m)
-            val m2 = typeCheck(openStmt1, m1)
+            val m1 = typeCheck(stmt1, m)
+            val m2 = typeCheck(stmt2, m1)
         in
             if t1 = BOOL then m else raise Fail("Type mistmatch 'if (<ERROR>) ... else ...'")
         end
-  | typeCheck( itree(inode("openStatement", _),
+
+  
+  | typeCheck( itree(_,
         [
             itree(inode("while", _), [] ),
             itree(inode("(", _), [] ),
             expr1,
             itree(inode(")", _), [] ),
-            openStmt1
+            stmt1
         ]
     ), m) =
         let
           val t1 = typeOf(expr1, m)    
-          val m1 = typeCheck(openStmt1, m)
+          val m1 = typeCheck(stmt1, m)
         in
           if t1 = BOOL then m else raise Fail("Type mistmatch 'while (<ERROR>) ...'")
         end
-  | typeCheck( itree(inode("openStatement", _),
+
+  | typeCheck( itree(_,
         [
             itree(inode("for", _), [] ),
             itree(inode("(", _), [] ),
@@ -464,73 +376,21 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             itree(inode(";", _), [] ),
             assignment2,
             itree(inode(")", _), [] ),
-            openStmt1
+            stmt1
         ]
     ), m) = 
         let
             val m1 = typeCheck(assignment1, m)    
             val t1 = typeOf(expr1, m1)
             val m2 = typeCheck(assignment2, m1)    
-            val m3 = typeCheck(openStmt1, m2)
+            val m3 = typeCheck(stmt1, m2)
         in
             if t1 = BOOL then m else raise Fail("Type mistmatch 'for (... ; <ERROR>; ...) ...'")
         end
 
   | typeCheck( itree(inode("closedStatement", _), [ child ] ), m) = typeCheck(child, m) 
-  | typeCheck( itree(inode("closedStatement", _),
-        [
-            itree(inode("if", _), [] ),
-            itree(inode("(", _), [] ),
-            expr1,
-            itree(inode(")", _), [] ),
-            closedStmt1,
-            itree(inode("else", _), [] ),
-            closedStmt2
-        ]
-    ), m) = 
-        let
-            val t1 = typeOf(expr1, m)
-            val m1 = typeCheck(closedStmt1, m)
-            val m2 = typeCheck(closedStmt2, m1)
-        in
-            if t1 = BOOL then m else raise Fail("Type mistmatch 'if (<ERROR>) ... else ...'")
-        end
-  | typeCheck( itree(inode("closedStatement", _),
-        [
-            itree(inode("while", _), [] ),
-            itree(inode("(", _), [] ),
-            expr1,
-            itree(inode(")", _), [] ),
-            closedStmt1
-        ]
-    ), m) =
-        let
-          val t1 = typeOf(expr1, m)    
-          val m1 = typeCheck(closedStmt1, m)
-        in
-          if t1 = BOOL then m else raise Fail("Type mistmatch 'while (<ERROR>) ...'")
-        end
-  | typeCheck( itree(inode("closedStatement", _),
-        [
-            itree(inode("for", _), [] ),
-            itree(inode("(", _), [] ),
-            assignment1,
-            itree(inode(";", _), [] ),
-            expr1,
-            itree(inode(";", _), [] ),
-            assignment2,
-            itree(inode(")", _), [] ),
-            closedStmt1
-        ]
-    ), m) = 
-        let
-            val m1 = typeCheck(assignment1, m)    
-            val t1 = typeOf(expr1, m1)
-            val m2 = typeCheck(assignment2, m1)    
-            val m3 = typeCheck(closedStmt1, m2)
-        in
-            if t1 = BOOL then m else raise Fail("Type mistmatch 'for (... ; <ERROR>; ...) ...'")
-        end
+
+(* Basic Statements *)
 
   | typeCheck( itree(inode("simpleStatement", _), [ itree(inode(";", _), [] ) ]), m) = m
   | typeCheck( itree(inode("simpleStatement", _), [ child ]), m) = typeCheck(child, m)
@@ -644,10 +504,9 @@ fun typeCheck( itree(inode("statementList", _), [ itree(inode("", _), []) ] ), m
             m
         end
 
-  | typeCheck( itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn typeCheck root = " ^ x_root ^ "\n\n")
+(* Fails *)
+
+  | typeCheck( TREE as itree(inode(x_root, _), children), _) = raise General.Fail("\n\nIn typeCheck root() = " ^ x_root ^ "\n\tHere ---->\t\"" ^ getLeaf(TREE) ^ "\"\n\n")
   | typeCheck _ = raise Fail("Error in TypeChecker.typeCheck - this should never occur")
 
-
-(* =========================================================================================================== *)  
-end; (* struct *)
-(* =========================================================================================================== *)
+end;

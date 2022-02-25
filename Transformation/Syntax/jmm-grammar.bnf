@@ -8,9 +8,9 @@ USE_LR_PARSER
         Chaz Brock
 *)
 
-(* TODO: Add quote escape character \" for strings *)
 (* TODO: Add functions and function calls *)
 (* TODO: Implement 'input' function *)
+(* TODO: Add REAL types *)
 (* TODO: Add control flow statements (e.g. 'continue' and 'break') *)
 
 statementList

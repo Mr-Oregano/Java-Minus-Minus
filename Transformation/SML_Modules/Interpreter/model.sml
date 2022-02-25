@@ -1,39 +1,28 @@
-(* =========================================================================================================== *)
 structure Model =
 
 struct 
 
-(* =========================================================================================================== *)
-(* This function may be useful to get the leaf node of a tree -- which is always a string (even for integers).
-   It is up to the interpreter to translate values accordingly (e.g., string to integer and string to boolean).
-   
-   Consult (i.e., open Int and open Bool) the SML structures Int and Bool for functions that can help with 
-   this translation. 
-*)
 fun getLeaf( term ) = CONCRETE.leavesToStringRaw term 
 
-
-(* TODO: Add REAL types *)
 datatype types = INT 
                | BOOL
                | STRING 
                | ERROR;
 
+(* Lists are homogenous containers so we define a custom datatype housing constructors
+   for different primitives. *)
 
 datatype denotable_value =  Boolean of bool 
                           | Integer of int
                           | String  of string; 
 
-
 type loc   = int
 type env   = (string * types * loc) list
 type store = (loc * denotable_value) list
 
-(* The model defined here is a triple consisting of an environment, an address counter, and a store. The environment
-   and the store are lists similar to what we have used in class. The address counter serves as an implementation of
-   new(). Note that, depending on your implementation, this counter either contains the address of (1) the
-   next available memory location, or (2) the last used memory location -- it all depends on when the counter is 
-   incremented. *)
+(* The model defined here is a triple consisting of an environment, an address counter, and a store. The address counter 
+   serves as an implementation of new(). *)
+
 val initialModel = ( []:env, 0:loc, []:store )
 
 (* NOTE: This is important! When accounting for scope we may want to keep 
@@ -45,6 +34,7 @@ fun typeStrToEnum(name) =
   if name = "bool" then BOOL
   else if name = "int" then INT
   else if name = "string" then STRING
+  else if name = "error" then ERROR
   else raise Fail("Unknown type '" ^ name ^ "'")
 
 fun typeEnumToStr(tp : types) = 
@@ -69,28 +59,45 @@ fun getInt(Integer v) = v
 
 fun getBool(Boolean v) = v
   | getBool _ = raise Fail("Invalid type.")
+
+fun getString(String v) = v
+  | getString _ = raise Fail("Invalid type.")
   
-fun getVarName(loc, []) = raise Fail("ERROR: variable not found.")  
-  | getVarName(loc, (name, tp, loc_n)::envs) = 
+(* SIG: loc * env -> string 
+   NOTES: This function retrieves the name and type of a variable given a location
+          and an environment. Throws an error if the location is invalid. 
+*)
+fun varName(loc, []) = raise Fail("ERROR: variable not found.")  
+  | varName(loc, (name, tp, loc_n)::envs) = 
       let
         val typeStr = typeEnumToStr(tp);
       in
         if loc = loc_n then name ^ ":" ^ typeStr
-        else getVarName(loc, envs)
+        else varName(loc, envs)
       end
 
-fun accessStore(loc, (env, _, [])) = raise Fail("ERROR: variable not initialized '" ^ getVarName(loc, env) ^ "'.")
+(* SIG: loc * (env * loc * store) -> (loc * denotable_value) 
+   NOTES: This function retrieves, from the model, the store entry at the specified location.
+          Throws an error if the location has not been initialized. 
+*)
+fun accessStore(loc, (env, _, [])) = raise Fail("ERROR: variable not initialized '" ^ varName(loc, env) ^ "'.")
   | accessStore(loc, (env, c, (loc_n, v)::s)) = 
         if loc = loc_n then v 
         else accessStore(loc, (env, c, s))
 
+(* SIG: loc * (env * loc * store) -> (string * types * loc)
+   NOTES: This function retrieves, from the model, the env entry housing the specified id.
+          Throws an error if the id does not exist. 
+*)
 fun accessEnv(id, ([], _, _)) = raise Fail("ERROR: '" ^ id ^ "' was not declared in this scope.")
   | accessEnv(id, ((id_n, tp, loc)::envs, c, s)) = 
         if id = id_n then (tp, loc) 
         else accessEnv(id, (envs, c, s))
 
-(* NOTE: updateStore() will add a new entry for unused location
-		 otherwise update the value stored at the given location. *)
+(* SIG: loc * denotable_value * (env * loc * store) -> (env * loc * store)
+   NOTES: This function will update the value stored at the specified location or add a new entry 
+          with specified value if location is not in use.
+*)
 fun updateStore(loc, v, (env, c, s)) = 
     let 
         fun aux([]) = [(loc, v)]
@@ -101,9 +108,10 @@ fun updateStore(loc, v, (env, c, s)) =
         (env, c, aux(s))
     end;
 
-(* Although a location was provided in the original updateEnv(), it does not
-   make sense to do so here since a new location can be computed from the counter
-   present in the program model. *)
+(* SIG: string * type * (env * loc * store) -> (env * loc * store)
+   NOTES: This function will add an environment entry with the specified id and type 
+          in the model. Throws an error if the id already exists.
+*)
 fun updateEnv(id, tp, (env, c, s)) = 
     let
         fun aux ([]) = [(id, tp, c)]
@@ -155,6 +163,5 @@ fun printModel(env, c, s) =
 		print("\nStore        \n---------------------------------------\n\n");
 		printStore(s)
 	)
-(* =========================================================================================================== *)
-end; (* struct *) 
-(* =========================================================================================================== *)
+
+end; 
